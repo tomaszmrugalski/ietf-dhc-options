@@ -84,6 +84,82 @@
 	</address>
     </author>
 
+    <author fullname="Tomasz Mrugalski" initials="T." surname="Mrugalski">
+      <organization abbrev="ISC">Internet Systems Consortium, Inc.
+      </organization>
+      <address>
+        <postal>
+          <street>950 Charter Street</street>
+          <city>Redwood City</city>
+          <region>CA</region>
+          <code>94063</code>
+          <country>USA</country>
+        </postal>
+        <phone>+1 650 423 1345</phone>
+        <email>tomasz.mrugalski@gmail.com</email>
+      </address>
+    </author>
+
+    <author fullname="Marcin Siodelski" initials="M." surname="Siodelski">
+      <organization abbrev=""></organization>
+      <address>
+        <postal>
+          <street></street>
+          <city></city>
+          <region></region>
+          <code></code>
+          <country></country>
+        </postal>
+        <phone></phone>
+        <email>msiodelski@gmail.com</email>
+      </address>
+    </author>
+
+    <author fullname="Jiangsheng" initials="S." surname="Jiang">
+      <organization abbrev=""></organization>
+      <address>
+        <postal>
+          <street></street>
+          <city></city>
+          <region></region>
+          <code></code>
+          <country></country>
+        </postal>
+        <phone></phone>
+        <email>msiodelski@gmail.com</email>
+      </address>
+    </author>
+
+    <author fullname="Jiang Sheng" initials="S." surname="Jiang">
+      <organization abbrev=""></organization>
+      <address>
+        <postal>
+          <street></street>
+          <city></city>
+          <region></region>
+          <code></code>
+          <country></country>
+        </postal>
+        <phone></phone>
+        <email>jiangsheng@huawei.com</email>
+      </address>
+    </author>
+
+    <author fullname="Suresh Krishnan" initials="S." surname="Krishnan">
+      <organization abbrev=""></organization>
+      <address>
+        <postal>
+          <street></street>
+          <city></city>
+          <region></region>
+          <code></code>
+          <country></country>
+        </postal>
+        <phone></phone>
+        <email>suresh.krishnan@ericsson.com</email>
+      </address>
+    </author>
+
     <date/>
 
     <area>Internet</area>
