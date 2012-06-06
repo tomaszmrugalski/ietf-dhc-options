@@ -10,6 +10,7 @@
 <!ENTITY rfc1035 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.1035.xml">
 <!ENTITY rfc3315 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3315.xml">
 <!ENTITY rfc3319 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3319.xml">
+<!ENTITY rfc3633 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3633.xml">
 <!ENTITY rfc3646 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3646.xml">
 <!ENTITY rfc3898 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3898.xml">
 <!ENTITY rfc3972 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3972.xml">
@@ -17,6 +18,7 @@
 <!ENTITY rfc4242 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4242.xml">
 <!ENTITY rfc4280 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4280.xml">
 <!ENTITY rfc4704 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4704.xml">
+<!ENTITY rfc6603 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6603.xml">
 ]>
 <rfc category="info" docName="draft-ietf-dhc-option-guidelines-08"
      ipr="trust200902">
@@ -81,17 +83,15 @@
       </address>
     </author>
 
-    <author fullname="Suresh Krishnan" initials="S." surname="Krishnan">
-      <organization abbrev="Ericsson">Ericsson</organization>
+    <author initials="S.K." surname="Krishnan" fullname="Suresh Krishnan">
+      <organization>Ericsson</organization>
       <address>
-        <postal>
-          <street></street>
-          <city></city>
-          <region></region>
-          <code></code>
-          <country></country>
-        </postal>
-        <phone></phone>
+	<postal>
+	  <street>8400 Blvd Decarie</street>
+	  <city>Town of Mount Royal</city>
+	  <region>Quebec</region>
+	  <country>Canada</country>
+	</postal>
         <email>suresh.krishnan@ericsson.com</email>
       </address>
     </author>
@@ -107,9 +107,9 @@
     <keyword>option format</keyword>
 
     <abstract>
-      <t>This document seeks to provide guidance to prospective DHCPv6 Option
-      authors, to help them in producing option formats that are easily
-      adoptable.</t>
+      <t>This document provides guidance to prospective DHCPv6 Option
+      developers to help them creating option formats that are easily
+      adoptable by existing DHCPv6 software.</t>
     </abstract>
   </front>
 
@@ -120,22 +120,24 @@
       frequently considered question is whether the proposed protocol presents
       itself needless barriers to adoption by deployed software.</t>
 
-      <t><xref target="RFC3315">DHCPv6</xref> software implementors are not
-      merely faced with the task of a given option's format on the wire. The
-      option must "fit" into every stage of the system's process, from the
-      user interface where configuration is entered to the machine interfaces
-      where configuration is consumed. <!-- To help understand the potential
-      implementation challenges of any new DHCP Option, <xref target="isc">one
-      implementation's approach to tackling DHCP Option formats</xref> has
-      been included as an Appendix.--></t>
+      <t><xref target="RFC3315">DHCPv6</xref> software implementors
+      are not merely faced with the task of handling a given option's
+      format on the wire. The option must fit into every stage of
+      the system's process, starting with the user interface used to
+      enter the configuration upto the machine interfaces where
+      configuration is ultimately consumed. <!-- To help understand the potential
+      implementation challenges of any new DHCP Option, <xref
+      target="isc">one implementation's approach to tackling DHCP
+      Option formats</xref> has been included as an Appendix.--></t>
 
-      <t>Another more frequently overlooked aspect of rapid adoption is the
-      question: Would the option would require operators to be intimately
-      familiar with the option's internal format in order to make use of it?
-      Most DHCPv6 software provides a facility for "unknown options" at the
-      time of publication to be configured by hand by an operator. But if
-      doing so requires extensive reading (more than can be covered in a
-      simple FAQ for example), it inhibits adoption.</t>
+      <t>Another frequently overlooked aspect of rapid adoption is
+      whether the option requires operators to be intimately familiar
+      with the option's internal format in order to use it?  Most
+      DHCPv6 software provides a facility for handling unknown options
+      at the time of publication. The handling of such options usually
+      needs to be manually configured by the operator. But if doing so
+      requires extensive reading (more than can be covered in a simple
+      FAQ for example), it inhibits adoption.</t>
 
       <t>So although a given solution would work, and might even be space,
         time, or aesthetically optimal, a given option is presented with a
@@ -151,10 +153,10 @@
         </list>
       </t>
 
-      <t>There are many things DHCPv6 option authors can do to form
-        DHCPv6 Options to stay off this list entirely, or failing that, to make
-        software implementors lives easier and improve its chances for
-        widespread adoption.</t>
+      <t>There are many things DHCPv6 option creators can do to avoid
+      the pitfalls in this list entirely, or failing that, to make
+      software implementors lives easier and improve its chances for
+      widespread adoption.</t>
     </section>
 
     <section title="When to Use DHCPv6">
@@ -175,23 +177,22 @@
         this parameter to be set by the directly attached network's
         administrators.</t>
 
-      <t>Bear in mind that the client still reserves the right to ignore
-      values received via DHCPv6 (for example, due to having a value manually
-      configured by its own operator) though there may be risk to be rejected
-      by network administration, and that at least one main use case for
-      DHCPv6 is the corporate enterprise. So even if the local Net Cafe's
-      operator is not a likely source of the candidate configuration, there
-      may be other DHCPv6 servers in a client's lifetime which are.</t>
+      <t>Note that the client still reserves the right to ignore
+      values received via DHCPv6 (for example, due to having a value
+      manually configured by its own operator). Bear in mind that
+      doing so might cause the client to be rejected network
+      attachment privileges, and this is one main reason for the use
+      of DHCPv6 in corporate enterprises. </t>
     </section>
 
     <section title="General Principles">
-      <t>The primary principle to follow in order to enhance an option's
-      adoptability is certainly simplification. But more specifically, to
-      create the option in such a way that it should not require any new or
-      special case software to support. If old software currently deployed and
-      in the field can adopt the option through supplied configuration
-      conveniences then it's fairly well assured that new software can easily
-      formally adopt it.</t>
+      <t>The primary guiding principle to follow in order to enhance
+      an option's adoptability is simplification. More specifically,
+      the option should be created in such a way that does not require
+      any new or special case software to support. If old software
+      currently deployed and in the field can adopt the option through
+      supplied configuration facilities then it's fairly certain that
+      new software can easily formally adopt it.</t>
 
       <t>There are at least two classes of DHCPv6 options: A bulk class of
       options which are provided explicitly to carry data from one side of the
@@ -200,19 +201,20 @@
       processing on the part of the DHCPv6 software or are used during special
       processing (such as the Fully Qualified Domain Name (FQDN) option <xref
       target="RFC4704"></xref>), and so forth; these options carry data that
-      is the result of a routine in some DHCPv6 software).</t>
+      is the result of a routine in some DHCPv6 software.</t>
 
-      <t>The guidelines laid out here should be understood to be relaxed for
-      the protocol class of options. Wherever special-case-code is already
-      required to adopt the DHCPv6 option, it is substantially more reasonable
-      to format the option in a less generic fashion, if there are measurable
-      benefits to doing so.</t>
+      <t>The guidelines laid out here should be applied in a relaxed
+      manner for the protocol class of options. Wherever
+      special case code is already required to adopt the DHCPv6
+      option, it is substantially more reasonable to format the option
+      in a less generic fashion, if there are measurable benefits to
+      doing so.</t>
     </section>
 
     <section title="Reusing Other Options">
       <t>There is a tradeoff between the adoptability of previously defined
-      option formats, and the advantages new or specialized formats can
-      provide. In the balance, it is usually preferrable to reuse previously
+      option formats, and the advantages that new or specialized formats can
+      provide. In general, it is usually preferrable to reuse previously
       used option formats.</t>
 
       <t>However, it isn't very practical to consider the bulk of DHCPv6
@@ -319,9 +321,10 @@
       implementation problem; as it requires that all speakers implement all
       current and future conditional formats.</t>
 
-      <t>Conditional formatting is absolutely not recommended, except in cases
-      where the DHCPv6 option has already been deployed experimentally, and
-      all but one conditional format is deprecated.</t>
+      <t>Conditional formatting is not recommended, except in cases
+      where the DHCPv6 option has already been deployed
+      experimentally, and all but one conditional format is
+      deprecated.</t>
     </section>
 
     <section title="Avoid Aliasing">
@@ -329,7 +332,7 @@
       the same configuration parameter. A commonly proposed example is to
       configure the location of some new service ("my foo server") using a
       binary IP address, a domain name field, and a URL. This kind of aliasing
-      is undesirable, and is best avoided.</t>
+      is undesirable, and is not recommended.</t>
 
       <t>In this case, where three different formats are supposed, it
       more than triples the work of the software involved, requiring
@@ -386,9 +389,9 @@
       twice: Identity Association for Prefix Delegation (IA_PD,
       defined in <xref target="RFC3633"/>, section 9) conveys IA
       Prefix (IAPREFIX, defined in <xref target="RFC3633"/>, section
-      10). Such delegated prefix may contain excluded range that is
-      represented by PD_EXCLUDE option that is conveyed as sub-option
-      inside IAPREFIX (PD_EXCLUDE, defined in <xref
+      10). Such delegated prefix may contain an excluded prefix range
+      that is represented by PD_EXCLUDE option that is conveyed as
+      sub-option inside IAPREFIX (PD_EXCLUDE, defined in <xref
       target="RFC6603"/>).  It seems awkward to refer to such options
       as sub-sub-option, therefore "sub-option" term is typically
       used, regardless of the nesting level.</t>
@@ -398,9 +401,9 @@
       should usually be avoided, as it increases complexity of the
       parser. It is much easier, faster and less error prone to parse
       larger number of options on a single (top-level) scope, than
-      parse options on several scopes. Please try to avoid sub-options
-      if possible. It is better to use sub-options rather than
-      conditional formatting, though.</t>
+      parse options on several scopes. The use of sub-options should
+      be avoided as much as possible but it is better to use
+      sub-options rather than conditional formatting.</t>
 
       <t>It should be noted that currently there is no clear way
       defined for requesting sub-options. Most known implementations
@@ -417,7 +420,7 @@
       and 4rd <xref target="I-D.ietf-softwire-4rd"/>. While it
       would be easier for provisioned nodes to get ready to use per
       node option values, such requirement puts exceedingly large
-      burdens on the server side. Alternatives should be considered,
+      loads on the server side. Alternatives should be considered,
       if possible. As an example, <xref
       target="I-D.mdt-softwire-map-dhcp-option"/> was designed in a
       way that all nodes are provisioned with the same set of MAP
@@ -438,14 +441,14 @@
     <section title="Is DHCPv6 dynamic?">
       <t>DHCPv6 stands for Dynamic Host Configuration Protocol for
       IPv6. Contrary to its name, is many contexts it is not
-      dynamic. While designing your options, remember that there is no
-      reliable way to instantly notify clients that something has
-      happened, e.g. parameter value has changed. There is a
-      RECONFIGURE mechanism, but it has several serious drawbacks that
-      makes its use difficult. First, its support is optional and many
-      client implementations do not support it. To use reconfigure
-      mechanism, server must use its secret nonce. That means that
-      provisioning server is the only one that can initiate
+      dynamic. While designing DHCPv6 options, it is worth noting that
+      there is no reliable way to instantly notify clients that
+      something has happened, e.g. parameter value has changed. There
+      is a RECONFIGURE mechanism, but it has several serious drawbacks
+      that makes its use difficult. First, its support is optional and
+      many client implementations do not support it. To use
+      reconfigure mechanism, server must use its secret nonce. That
+      means that provisioning server is the only one that can initiate
       reconfiguration. Other servers do not know it and cannot trigger
       reconfiguration. Therefore the only reliable way for clients to
       refresh their configuration is to wait till T1 expires.</t>
@@ -464,9 +467,9 @@
       continue configuration process with that server, ignoring all
       other servers.</t>
       <t>This is a generic DHCP protocol issue and should not be dealt
-      within each option separately. DHC WG is aware of this problem and
-      is working on a protocol-level solution. Fixing this problem should
-      not be attempted on a per option basis.</t>
+      within each option separately. This issue is better dealt with
+      using a protocol-level solution and fixing this problem should not
+      be attempted on a per option basis.</t>
     </section>
 
     <section title="Considerations for Creating New Formats">
@@ -538,7 +541,7 @@
     </section> -->
 
     <section anchor="fragmentation" title="Option Size">
-      <t><xref target="RFC3315">DHCPv6</xref> has packet sizes up to 64KB.
+      <t><xref target="RFC3315">DHCPv6</xref> allows for packet sizes up to 64KB.
       First, through its use of link-local addresses, it steps aside many of
       the deployment problems that plague DHCPv4, and is actually an UDP over
       IPv6 based protocol (compared to DHCPv4, which is mostly UDP over IPv4
@@ -551,23 +554,24 @@
       divides those too big from the workable.</t>
 
       <t>It is advantageous to prefer option formats which contain the desired
-      information in the smallest form factor that solves the
+      information in the smallest form factor that satisfies the
       requirements.</t>
 
-      <t>DHCPv6 does allow multiple instances of a given option, and they are
-      treated as distinct values following the defined format, however this
-      feature is generally preferred to be restricted to protocol class
-      features (such as the IA_* series of options); it is better to define
-      your option as an array if it is possible. It is recommended to clarify
-      (with normative language) if any DHCPv6 option may appear once or
-      multiple times.</t>
+      <t>DHCPv6 does allow for multiple instances of a given option,
+      and they are treated as distinct values following the defined
+      format, however this feature is generally preferred to be
+      restricted to protocol class features (such as the IA_* series
+      of options). In such cases, it is better to define an option as
+      an array if it is possible. It is recommended to clarify (with
+      normative language) whether a given DHCPv6 option may appear
+      once or multiple times.</t>
     </section>
 
     <section title="Clients Request their Options">
       <t>The <xref target="RFC3315">DHCPv6 Option Request Option
       (OPTION_ORO)</xref>, is an option that serves two purposes - to
       inform the server what options the client supports and is
-      willing to digest.
+      willing to consume.
       <!-- tomek: order is not important in DHCPv6; there are no concerns
       with options not fitting in the packet in sane v6 implementations -->
       <!--, and in what order of priority the client places those option
@@ -578,9 +582,9 @@
       Option Request Option, such as those formed by elements of the
       protocol's internal workings, or are formed on either end by
       DHCPv6-level software engaged in some exchange of
-      information. When in any form of doubt, assume that any new
+      information. When in doubt, it is prudent to assume that any new
       option must be present on the relevant option request list if
-      the client desires it.</t>
+      the client desires to receive it.</t>
 
       <t>It is a frequent mistake of option draft authors, then, to create
         text that implies that a server will simply provide the new option,
@@ -590,45 +594,45 @@
         servers with hints as to values they desire, and servers MAY respond
         with the option contents (if they have been so configured).</t>
 
-      <t>Under only the most dire of circumstances should a new option
-      definition require special ordering of options either in the
-      relevant request option, or in the order of options within the
-      packet. Although it is reasonable to expect that options will be
-      processed in the order they appear in ORO, server software is
-      not required to sort DHCPv6 options into the same order in reply
-      messages. It should be noted that any requirement regarding
-      option ordering will break down most existing implementations,
-      as "order is not important" was one of the design priciples of
-      DHCPv6 and many implementations follow it. For example, there
-      are existing implementations that use hash maps for storing
-      options, so forcing any particular order is not feasible without
-      great deal of work. If options must be processed in any specific
-      order (e.g. due to inter-dependency), use of option
-      encapsulation should be considered.</t>
+      <t>Creators of DHCPv6 options MUST NOT require special ordering
+      of options either in the relevant request option, or in the
+      order of options within the packet. Although it is reasonable to
+      expect that options will be processed in the order they appear
+      in ORO, server software is not required to sort DHCPv6 options
+      into the same order in reply messages. It should be noted that
+      any requirement regarding option ordering will break down most
+      existing implementations, as "order is not important" was one of
+      the design priciples of DHCPv6 and many implementations follow
+      it. For example, there are existing implementations that use
+      hash maps for storing options, so forcing any particular order
+      is not feasible without great deal of work. If options must be
+      processed in any specific order (e.g. due to inter-dependency),
+      use of option encapsulation should be considered.</t>
     </section>
 
     <section title="Security Considerations">
       <t>DHCPv6 does have an Authentication mechanism (<xref
-      target="RFC3315"></xref>), where it is possible for DHCPv6 software to
-      discriminate between authentic endpoints and men in the middle. Other
-      authentication mechanisms may optionally be deployed. For example, the
-      Secure DHCPv6 <xref target="I-D.ietf-dhc-secure-dhcpv6"></xref>, based
-      on Cryptographically Generated Addresses (CGA) <xref
+      target="RFC3315"></xref>) that makes it possible for DHCPv6
+      software to discriminate between authentic endpoints and men in
+      the middle. Other authentication mechanisms may optionally be
+      deployed. For example, the Secure DHCPv6 <xref
+      target="I-D.ietf-dhc-secure-dhcpv6"></xref>, based on
+      Cryptographically Generated Addresses (CGA) <xref
       target="RFC3972"></xref>, can provide source address ownership
-      validation, message origin authentication and message integrity without
-      requiring symmetric key pairs or supporting from any key management
-      system.</t>
+      validation, message origin authentication and message integrity
+      without requiring symmetric key pairs or supporting from any key
+      management system. However, as of now, the mechanism is not
+      widely deployed. It also does not provide end-to-end
+      encryption.</t>
 
-      <t>However, at this date the mechanism is poorly deployed. It also does
-      not provide end-to-end encryption.</t>
-
-      <t>So, while creating a new option, bear in mind that DHCPv6 packet
-      contents are always transmitted in the clear, and actual production use
-      of the software will probably be vulnerable at least to
-      man-in-the-middle attacks from within the network, even where the
-      network itself is protected from external attacks by firewalls. In
-      particular, some DHCPv6 message exchanges are transmitted to multicast 
-      addresses that are likely broadcast anyway.</t>
+      <t>So, while creating a new option, it is prudent to assume that
+      the DHCPv6 packet contents are always transmitted in the clear,
+      and actual production use of the software will probably be
+      vulnerable at least to man-in-the-middle attacks from within the
+      network, even where the network itself is protected from
+      external attacks by firewalls. In particular, some DHCPv6
+      message exchanges are transmitted to multicast addresses that
+      are likely broadcast anyway.</t>
 
       <t>If an option is of a specific fixed length, it is useful to remind
       the implementer of the option data's full length. This is easily done by
@@ -645,14 +649,14 @@
         implementor that an option may be exceptionally long (to be prepared
         to handle errors rather than truncate values).</t>
 
-      <t>For some option contents, "insane values" may be used to breach
+      <t>For some option contents, out of bound values may be used to breach
         security.  An IP address field might be made to carry a loopback
         address, or local broadcast address, and depending on the protocol
         this may lead to undesirable results.  A domain name field may
         be filled with contrived contents that exceed the limitations
         placed upon domain name formatting... as this value is possibly
         delivered to "internal configuration" records of the system, it
-        may be trusted, rather than validated.</t>
+        may be implicitly trusted without being validated.</t>
 
       <t>So it behooves an option's definition to contain any validation
         measures as can reasonably be made.</t>
@@ -668,7 +672,7 @@
       &rfc1035;
       &rfc3315;
       &rfc3319;
-      <?rfc include='reference.RFC.3633'?>
+      &rfc3633;
       &rfc3646;
       &rfc3898;
       &rfc3972;
@@ -676,7 +680,7 @@
       &rfc4242;
       &rfc4280;
       &rfc4704;
-      <?rfc include='reference.RFC.6603'?>
+      &rfc6603;
     </references>
 
     <references title="Informative References">
