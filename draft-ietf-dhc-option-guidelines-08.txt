@@ -4,14 +4,13 @@
 Dynamic Host Configuration Working                            D. Hankins
 Group                                                             Google
 Internet-Draft                                              T. Mrugalski
-Intended status: Informational                                       ISC
-Expires: December 9, 2012                                   M. Siodelski
-
+Intended status: Informational                              M. Siodelski
+Expires: December 20, 2012                                           ISC
                                                                 S. Jiang
                                             Huawei Technologies Co., Ltd
                                                              S. Krishnan
                                                                 Ericsson
-                                                            June 7, 2012
+                                                           June 18, 2012
 
 
                Guidelines for Creating New DHCPv6 Options
@@ -38,7 +37,7 @@ Status of this Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on December 9, 2012.
+   This Internet-Draft will expire on December 20, 2012.
 
 Copyright Notice
 
@@ -49,15 +48,15 @@ Copyright Notice
    Provisions Relating to IETF Documents
    (http://trustee.ietf.org/license-info) in effect on the date of
    publication of this document.  Please review these documents
+   carefully, as they describe your rights and restrictions with respect
 
 
 
-Hankins, et al.         Expires December 9, 2012                [Page 1]
+Hankins, et al.         Expires December 20, 2012               [Page 1]
 
 Internet-Draft          DHCPv6 Option Guidelines               June 2012
 
 
-   carefully, as they describe your rights and restrictions with respect
    to this document.  Code Components extracted from this document must
    include Simplified BSD License text as described in Section 4.e of
    the Trust Legal Provisions and are provided without warranty as
@@ -70,21 +69,27 @@ Table of Contents
    2.  When to Use DHCPv6 . . . . . . . . . . . . . . . . . . . . . .  3
    3.  General Principles . . . . . . . . . . . . . . . . . . . . . .  4
    4.  Reusing Other Options  . . . . . . . . . . . . . . . . . . . .  5
-   5.  Avoid Conditional Formatting . . . . . . . . . . . . . . . . .  6
-   6.  Avoid Aliasing . . . . . . . . . . . . . . . . . . . . . . . .  6
-   7.  Suboptions in DHCPv6 . . . . . . . . . . . . . . . . . . . . .  7
-   8.  Additional States Considered Harmful . . . . . . . . . . . . .  8
-   9.  Is DHCPv6 dynamic? . . . . . . . . . . . . . . . . . . . . . .  8
-   10. Multiple provisioning domains  . . . . . . . . . . . . . . . .  9
-   11. Considerations for Creating New Formats  . . . . . . . . . . .  9
-   12. Option Size  . . . . . . . . . . . . . . . . . . . . . . . . .  9
-   13. Clients Request their Options  . . . . . . . . . . . . . . . . 10
-   14. Security Considerations  . . . . . . . . . . . . . . . . . . . 11
-   15. IANA Considerations  . . . . . . . . . . . . . . . . . . . . . 12
-   16. References . . . . . . . . . . . . . . . . . . . . . . . . . . 12
-     16.1.  Informative References  . . . . . . . . . . . . . . . . . 12
-     16.2.  Informative References  . . . . . . . . . . . . . . . . . 13
-   Authors' Addresses . . . . . . . . . . . . . . . . . . . . . . . . 13
+     4.1.  Option with IPv6 addresses . . . . . . . . . . . . . . . .  5
+     4.2.  Option with 32-bit integer value . . . . . . . . . . . . .  6
+     4.3.  Option with 16-bit integer value . . . . . . . . . . . . .  6
+     4.4.  Option with 8-bit integer value  . . . . . . . . . . . . .  7
+     4.5.  Option with variable length data . . . . . . . . . . . . .  7
+     4.6.  Option with DNS Wire Format Domain Name List . . . . . . .  8
+   5.  Avoid Conditional Formatting . . . . . . . . . . . . . . . . .  8
+   6.  Avoid Aliasing . . . . . . . . . . . . . . . . . . . . . . . .  8
+   7.  Suboptions in DHCPv6 . . . . . . . . . . . . . . . . . . . . .  9
+   8.  Additional States Considered Harmful . . . . . . . . . . . . . 10
+   9.  Is DHCPv6 dynamic? . . . . . . . . . . . . . . . . . . . . . . 11
+   10. Multiple provisioning domains  . . . . . . . . . . . . . . . . 11
+   11. Considerations for Creating New Formats  . . . . . . . . . . . 11
+   12. Option Size  . . . . . . . . . . . . . . . . . . . . . . . . . 12
+   13. Clients Request their Options  . . . . . . . . . . . . . . . . 12
+   14. Security Considerations  . . . . . . . . . . . . . . . . . . . 13
+   15. IANA Considerations  . . . . . . . . . . . . . . . . . . . . . 14
+   16. References . . . . . . . . . . . . . . . . . . . . . . . . . . 14
+     16.1. Informative References . . . . . . . . . . . . . . . . . . 14
+     16.2. Informative References . . . . . . . . . . . . . . . . . . 15
+   Authors' Addresses . . . . . . . . . . . . . . . . . . . . . . . . 16
 
 
 
@@ -103,12 +108,7 @@ Table of Contents
 
 
 
-
-
-
-
-
-Hankins, et al.         Expires December 9, 2012                [Page 2]
+Hankins, et al.         Expires December 20, 2012               [Page 2]
 
 Internet-Draft          DHCPv6 Option Guidelines               June 2012
 
@@ -164,7 +164,7 @@ Internet-Draft          DHCPv6 Option Guidelines               June 2012
 
 
 
-Hankins, et al.         Expires December 9, 2012                [Page 3]
+Hankins, et al.         Expires December 20, 2012               [Page 3]
 
 Internet-Draft          DHCPv6 Option Guidelines               June 2012
 
@@ -220,12 +220,22 @@ Internet-Draft          DHCPv6 Option Guidelines               June 2012
 
 
 
-Hankins, et al.         Expires December 9, 2012                [Page 4]
+Hankins, et al.         Expires December 20, 2012               [Page 4]
 
 Internet-Draft          DHCPv6 Option Guidelines               June 2012
 
 
 4.  Reusing Other Options
+
+   The easiest approach to manufacturing trivially deployable DHCPv6
+   Options is to assemble the option out of whatever common fragments
+   fit - possibly allowing a group of fragments to repeat to fill the
+   remaining space (if present) and so provide multiple values.  Place
+   all fixed size values at the start of the option, and any variable/
+   indeterminate sized value at the tail end of the option.
+
+   This estimates that implementations will be able to reuse code paths
+   designed to support the other options.
 
    There is a tradeoff between the adoptability of previously defined
    option formats, and the advantages that new or specialized formats
@@ -240,58 +250,173 @@ Internet-Draft          DHCPv6 Option Guidelines               June 2012
    is only a list of option format fragments which are used in two or
    more options.
 
-   +---------------+-------+-------------------------------------------+
-   |      Fragment |  Size | Types of Uses                             |
-   +---------------+-------+-------------------------------------------+
-   |  ipv6-address |    16 | DHCPv6 server unicast address [RFC3315],  |
-   |               |       | addresses of servers ([RFC3319],          |
-   |               |       | [RFC3646], [RFC3898], [RFC4075],          |
-   |               |       | [RFC4280]).                               |
-   |        32-bit |     4 | Signed or unsigned varieties.  Example of |
-   |       integer |       | unsigned value is Information refresh     |
-   |               |       | time [RFC4242].                           |
-   |        16-bit |     2 | Client configuration parameters, the      |
-   |       integer |       | elapsed time option [RFC3315] in DHCPv6.  |
-   | 8-bit integer |     1 | Used for host configuration parameters,   |
-   |               |       | DHCPv6 Preference [RFC3315].              |
-   |     NVT-ASCII | unlim | This is the kitchen sink of common        |
-   |          Text |       | fragments.  Common uses are for filenames |
-   |               |       | (such as TFTP paths), host or domain      |
-   |               |       | names (but this should be discouraged),   |
-   |               |       | or protocol features such as textual      |
-   |               |       | messages such as verbose error            |
-   |               |       | indicators.  Since the size of this       |
-   |               |       | format cannot be determined (it is not    |
-   |               |       | NULL terminated), it consumes any         |
-   |               |       | remaining space in the option.            |
-   |      DNS Wire | unlim | Presently used for 'domain search' lists  |
-   | Format Domain |       | in DHCPv6 [RFC3646], for any host or      |
-   |     Name List |       | domain name.  A field formatted this way  |
-   |     [RFC1035] |       | may have a determinate length if the      |
-   |               |       | number of root labels is limited.         |
-   |   'suboption' | unlim | ?No current use case in DHCPv6 options?   |
-   | encapsulation |       |                                           |
-   +---------------+-------+-------------------------------------------+
+4.1.  Option with IPv6 addresses
+
+   This option format is used to carry one or many IPv6 addresses:
+      0                   1                   2                   3
+      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |          option-code          |           option-len          |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |                                                               |
+     |                         ipv6-address                          |
+     |                                                               |
+     |                                                               |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |                                                               |
+     |                         ipv6-address                          |
+     |                                                               |
+     |                                                               |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |                              ...                              |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                    Figure 1: Option with IPv6 address
 
 
 
 
-Hankins, et al.         Expires December 9, 2012                [Page 5]
+Hankins, et al.         Expires December 20, 2012               [Page 5]
 
 Internet-Draft          DHCPv6 Option Guidelines               June 2012
 
 
-                     Table 1: Common Option Fragments
+   Examples of use:
 
-   The easiest approach to manufacturing trivially deployable DHCPv6
-   Options is to assemble the option out of whatever common fragments
-   fit - possibly allowing a group of fragments to repeat to fill the
-   remaining space (if present) and so provide multiple values.  Place
-   all fixed size values at the start of the option, and any variable/
-   indeterminate sized value at the tail end of the option.
+   o  DHCPv6 server unicast address [RFC3315]
 
-   This estimates that implementations will be able to reuse code paths
-   designed to support the other options.
+   o  SIP Servers IPv6 Address List [RFC3319]
+
+   o  DNS Recursive Name Server [RFC3646]
+
+   o  NIS Servers [RFC3898]
+
+   o  SNTP Servers [RFC4075]
+
+   o  Broadcast and Multicast Service Controller IPv6 Address Option for
+      DHCPv6 [RFC4280]
+
+4.2.  Option with 32-bit integer value
+
+   This option format can be used to carry 32 bit-signed or unsigned
+   integer value:
+      0                   1                   2                   3
+      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |          option-code          |           option-len          |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |                         32-bit-integer                        |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                Figure 2: Option with 32-bit-integer value
+
+   Examples of use:
+
+   o  Information Refresh Time [RFC4242]
+
+4.3.  Option with 16-bit integer value
+
+   This option format can be used to carry 16-bit signed or unsigned
+   integer values:
+      0                   1                   2                   3
+      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |          option-code          |           option-len          |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |         16-bit-integer        |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                Figure 3: Option with 16-bit integer value
+
+   Examples of use:
+
+
+
+Hankins, et al.         Expires December 20, 2012               [Page 6]
+
+Internet-Draft          DHCPv6 Option Guidelines               June 2012
+
+
+   o  Elapsed Time [RFC3315]
+
+4.4.  Option with 8-bit integer value
+
+   This option format can be used to carry 8-bit integer values:
+      0                   1                   2                   3
+      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |          option-code          |          option-len           |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     | 8-bit-integer |
+     +-+-+-+-+-+-+-+-+
+
+                 Figure 4: Option with 8-bit integer value
+
+   Examples of use:
+
+   o  DHCPv6 Preference [RFC3315]
+
+4.5.  Option with variable length data
+
+   This option can be used to carry variable length data of any kind.
+   Internal representation of carried data is option specific.  Some of
+   the existing DHCPv6 options use NVT-ASCII strings to encode:
+   filenames, host or domain names, protocol features or textual
+   messages such as verbose error indicators.
+
+   This option format provides a lot of flexibility to pass data of
+   almost any kind.  Though, whenever possible it is highly recommended
+   to use more specialized options, with field types better matching
+   carried data types.
+      0                   1                   2                   3
+      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |          option-code          |         option-len            |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     .                                                               .
+     .                      variable length data                     .
+     .                                                               .
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                 Figure 5: Option with variale length data
+
+   Examples of use:
+
+   o  Client Identifier [RFC3315]
+
+
+
+
+
+Hankins, et al.         Expires December 20, 2012               [Page 7]
+
+Internet-Draft          DHCPv6 Option Guidelines               June 2012
+
+
+   o  Server Identifier [RFC3315]
+
+   o  Boot File URL [RFC5970]
+
+4.6.  Option with DNS Wire Format Domain Name List
+
+   This option is used to carry 'domain search' lists or any host or
+   domain name:
+      0                   1                   2                   3
+      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |          option-code          |         option-length         |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |               DNS Wire Format Domain Name List                |
+     |                              ...                              |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+          Figure 6: Option with DNS Wire Format Domain Name List
+
+   Examples of use:
+
+   o  SIP Servers Domain Name List [RFC3319]
+
+   o  NIS Domain Name [RFC3898]
 
 
 5.  Avoid Conditional Formatting
@@ -317,6 +442,13 @@ Internet-Draft          DHCPv6 Option Guidelines               June 2012
    binary IP address, a domain name field, and a URL.  This kind of
    aliasing is undesirable, and is not recommended.
 
+
+
+Hankins, et al.         Expires December 20, 2012               [Page 8]
+
+Internet-Draft          DHCPv6 Option Guidelines               June 2012
+
+
    In this case, where three different formats are supposed, it more
    than triples the work of the software involved, requiring support for
    not merely one format, but support to produce and digest all three.
@@ -329,14 +461,6 @@ Internet-Draft          DHCPv6 Option Guidelines               June 2012
    It also becomes unclear which types of values are mandatory, and how
    configuring some of the options may influence the others.  For
    example, if an operator configures the URL only, should the server
-
-
-
-Hankins, et al.         Expires December 9, 2012                [Page 6]
-
-Internet-Draft          DHCPv6 Option Guidelines               June 2012
-
-
    synthesize a domain name and IP address?
 
    A single configuration value on a host is probably presented to the
@@ -374,6 +498,13 @@ Internet-Draft          DHCPv6 Option Guidelines               June 2012
    DHCPv4, depending if it was located in top-level or inside of Relay
    Agent Information option.  There is no such ambiguity in DHCPv6.
 
+
+
+Hankins, et al.         Expires December 20, 2012               [Page 9]
+
+Internet-Draft          DHCPv6 Option Guidelines               June 2012
+
+
    Such encapsulation mechanism is not limited to one level.  There is
    at least one defined option that is encapsulated twice: Identity
    Association for Prefix Delegation (IA_PD, defined in [RFC3633],
@@ -385,14 +516,6 @@ Internet-Draft          DHCPv6 Option Guidelines               June 2012
    term is typically used, regardless of the nesting level.
 
    When defining configuration means for more complex mechanisms, it may
-
-
-
-Hankins, et al.         Expires December 9, 2012                [Page 7]
-
-Internet-Draft          DHCPv6 Option Guidelines               June 2012
-
-
    be tempting to simply use sub-options.  That should usually be
    avoided, as it increases complexity of the parser.  It is much
    easier, faster and less error prone to parse larger number of options
@@ -431,6 +554,13 @@ Internet-Draft          DHCPv6 Option Guidelines               June 2012
    deployment unnecessarily complex.  Please try to avoid it.
 
 
+
+
+Hankins, et al.         Expires December 20, 2012              [Page 10]
+
+Internet-Draft          DHCPv6 Option Guidelines               June 2012
+
+
 9.  Is DHCPv6 dynamic?
 
    DHCPv6 stands for Dynamic Host Configuration Protocol for IPv6.
@@ -441,14 +571,6 @@ Internet-Draft          DHCPv6 Option Guidelines               June 2012
    but it has several serious drawbacks that makes its use difficult.
    First, its support is optional and many client implementations do not
    support it.  To use reconfigure mechanism, server must use its secret
-
-
-
-Hankins, et al.         Expires December 9, 2012                [Page 8]
-
-Internet-Draft          DHCPv6 Option Guidelines               June 2012
-
-
    nonce.  That means that provisioning server is the only one that can
    initiate reconfiguration.  Other servers do not know it and cannot
    trigger reconfiguration.  Therefore the only reliable way for clients
@@ -487,6 +609,14 @@ Internet-Draft          DHCPv6 Option Guidelines               June 2012
    the option with the foreknowledge that its parts may later become a
    common fragment.
 
+
+
+
+Hankins, et al.         Expires December 20, 2012              [Page 11]
+
+Internet-Draft          DHCPv6 Option Guidelines               June 2012
+
+
    One specific consideration to evaluate is whether or not options of a
    similar format would need to have multiple or single values encoded
    (whatever differs from the current option), and how that might be
@@ -497,14 +627,6 @@ Internet-Draft          DHCPv6 Option Guidelines               June 2012
 
    DHCPv6 [RFC3315] allows for packet sizes up to 64KB.  First, through
    its use of link-local addresses, it steps aside many of the
-
-
-
-Hankins, et al.         Expires December 9, 2012                [Page 9]
-
-Internet-Draft          DHCPv6 Option Guidelines               June 2012
-
-
    deployment problems that plague DHCPv4, and is actually an UDP over
    IPv6 based protocol (compared to DHCPv4, which is mostly UDP over
    IPv4 protocol, but with layer 2 hacks).  Second, RFC 3315 explicitly
@@ -543,6 +665,14 @@ Internet-Draft          DHCPv6 Option Guidelines               June 2012
 
    It is a frequent mistake of option draft authors, then, to create
    text that implies that a server will simply provide the new option,
+
+
+
+Hankins, et al.         Expires December 20, 2012              [Page 12]
+
+Internet-Draft          DHCPv6 Option Guidelines               June 2012
+
+
    and clients will digest it.  Generally, it's best to also specify
    that clients MUST place the new option code on the relevant list
    option, clients MAY include the new option in their packets to
@@ -553,14 +683,6 @@ Internet-Draft          DHCPv6 Option Guidelines               June 2012
    options either in the relevant request option, or in the order of
    options within the packet.  Although it is reasonable to expect that
    options will be processed in the order they appear in ORO, server
-
-
-
-Hankins, et al.         Expires December 9, 2012               [Page 10]
-
-Internet-Draft          DHCPv6 Option Guidelines               June 2012
-
-
    software is not required to sort DHCPv6 options into the same order
    in reply messages.  It should be noted that any requirement regarding
    option ordering will break down most existing implementations, as
@@ -600,6 +722,13 @@ Internet-Draft          DHCPv6 Option Guidelines               June 2012
    length before digesting them into likewise fixed length regions of
    memory or stack.
 
+
+
+Hankins, et al.         Expires December 20, 2012              [Page 13]
+
+Internet-Draft          DHCPv6 Option Guidelines               June 2012
+
+
    If an option may be of variable size (such as having indeterminate
    length fields, such as domain names or text strings), it is advisable
    to explicitly remind the implementor to be aware of the potential for
@@ -609,14 +738,6 @@ Internet-Draft          DHCPv6 Option Guidelines               June 2012
    than truncate values).
 
    For some option contents, out of bound values may be used to breach
-
-
-
-Hankins, et al.         Expires December 9, 2012               [Page 11]
-
-Internet-Draft          DHCPv6 Option Guidelines               June 2012
-
-
    security.  An IP address field might be made to carry a loopback
    address, or local broadcast address, and depending on the protocol
    this may lead to undesirable results.  A domain name field may be
@@ -657,6 +778,13 @@ Internet-Draft          DHCPv6 Option Guidelines               June 2012
               Configuration Protocol for IPv6 (DHCPv6)", RFC 3646,
               December 2003.
 
+
+
+Hankins, et al.         Expires December 20, 2012              [Page 14]
+
+Internet-Draft          DHCPv6 Option Guidelines               June 2012
+
+
    [RFC3898]  Kalusivalingam, V., "Network Information Service (NIS)
               Configuration Options for Dynamic Host Configuration
               Protocol for IPv6 (DHCPv6)", RFC 3898, October 2004.
@@ -665,14 +793,6 @@ Internet-Draft          DHCPv6 Option Guidelines               June 2012
               RFC 3972, March 2005.
 
    [RFC4075]  Kalusivalingam, V., "Simple Network Time Protocol (SNTP)
-
-
-
-Hankins, et al.         Expires December 9, 2012               [Page 12]
-
-Internet-Draft          DHCPv6 Option Guidelines               June 2012
-
-
               Configuration Option for DHCPv6", RFC 4075, May 2005.
 
    [RFC4242]  Venaas, S., Chown, T., and B. Volz, "Information Refresh
@@ -686,6 +806,9 @@ Internet-Draft          DHCPv6 Option Guidelines               June 2012
    [RFC4704]  Volz, B., "The Dynamic Host Configuration Protocol for
               IPv6 (DHCPv6) Client Fully Qualified Domain Name (FQDN)
               Option", RFC 4704, October 2006.
+
+   [RFC5970]  Huth, T., Freimann, J., Zimmer, V., and D. Thaler, "DHCPv6
+              Options for Network Boot", RFC 5970, September 2010.
 
    [RFC6603]  Korhonen, J., Savolainen, T., Krishnan, S., and O. Troan,
               "Prefix Exclude Option for DHCPv6-based Prefix
@@ -711,6 +834,13 @@ Internet-Draft          DHCPv6 Option Guidelines               June 2012
               January 2012.
 
 
+
+
+Hankins, et al.         Expires December 20, 2012              [Page 15]
+
+Internet-Draft          DHCPv6 Option Guidelines               June 2012
+
+
 Authors' Addresses
 
    David W. Hankins
@@ -720,13 +850,6 @@ Authors' Addresses
    USA
 
    Email: dhankins@google.com
-
-
-
-
-Hankins, et al.         Expires December 9, 2012               [Page 13]
-
-Internet-Draft          DHCPv6 Option Guidelines               June 2012
 
 
    Tomasz Mrugalski
@@ -769,16 +892,5 @@ Internet-Draft          DHCPv6 Option Guidelines               June 2012
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-Hankins, et al.         Expires December 9, 2012               [Page 14]
+Hankins, et al.         Expires December 20, 2012              [Page 16]
 

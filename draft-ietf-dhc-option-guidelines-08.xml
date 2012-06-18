@@ -18,6 +18,7 @@
 <!ENTITY rfc4242 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4242.xml">
 <!ENTITY rfc4280 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4280.xml">
 <!ENTITY rfc4704 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4704.xml">
+<!ENTITY rfc5970 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5970.xml">
 <!ENTITY rfc6603 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6603.xml">
 ]>
 <rfc category="info" docName="draft-ietf-dhc-option-guidelines-08"
@@ -57,7 +58,7 @@
     </author>
 
     <author fullname="Marcin Siodelski" initials="M." surname="Siodelski">
-      <organization abbrev=""></organization>
+      <organization abbrev="ISC"></organization>
       <address>
         <postal>
           <street></street>
@@ -212,6 +213,16 @@
     </section>
 
     <section title="Reusing Other Options">
+      <t>The easiest approach to manufacturing trivially deployable DHCPv6
+      Options is to assemble the option out of whatever common fragments fit -
+      possibly allowing a group of fragments to repeat to fill the remaining
+      space (if present) and so provide multiple values. Place all fixed size
+      values at the start of the option, and any variable/indeterminate sized
+      value at the tail end of the option.</t>
+
+      <t>This estimates that implementations will be able to reuse code paths
+      designed to support the other options.</t>
+
       <t>There is a tradeoff between the adoptability of previously defined
       option formats, and the advantages that new or specialized formats can
       provide. In general, it is usually preferrable to reuse previously
@@ -224,92 +235,165 @@
       exampling every option format ever devised...it is only a list of option
       format fragments which are used in two or more options.</t>
 
-      <texttable anchor="fragments" title="Common Option Fragments">
-        <!-- Note the Size column is right-alingned to provide decimal
-          - alignment (4/16, 4 and 6 are on the same text column). -->
+      <section title="Option with IPv6 addresses">
+        <t>This option format is used to carry one or many IPv6
+        addresses:</t>
+        <figure align="center" anchor="option-with-ipv6-address-format"
+                title="Option with IPv6 address">
+          <artwork><![CDATA[ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|          option-code          |           option-len          |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                                                               |
+|                         ipv6-address                          |
+|                                                               |
+|                                                               |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                                                               |
+|                         ipv6-address                          |
+|                                                               |
+|                                                               |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                              ...                              |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork>
+        </figure>
+        <t>Examples of use:
+          <list style="symbols">
+            <t><xref target="RFC3315">DHCPv6 server unicast address</xref></t>
+            <t><xref target="RFC3319">SIP Servers IPv6 Address List</xref></t>
+            <t><xref target="RFC3646">DNS Recursive Name Server</xref></t>
+            <t><xref target="RFC3898">NIS Servers</xref></t>
+            <t><xref target="RFC4075">SNTP Servers</xref></t>
+            <t><xref target="RFC4280">Broadcast and Multicast Service
+            Controller IPv6 Address Option for DHCPv6</xref></t>
+          </list>
+        </t>
+      </section>
 
-        <ttcol align="right">Fragment</ttcol>
+      <section title="Option with 32-bit integer value">
+        <t>This option format can be used to carry 32 bit-signed or unsigned
+        integer value:</t>
+        <figure align="center" anchor="option-with-32-bit-integer-format"
+                title="Option with 32-bit-integer value">
+          <artwork><![CDATA[ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|          option-code          |           option-len          |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                         32-bit-integer                        |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork>
+        </figure>
+        <t>Examples of use:
+          <list style="symbols">
+            <t><xref target="RFC4242">Information Refresh Time</xref></t>
+          </list>
+        </t>
+      </section>
 
-        <ttcol align="right">Size</ttcol>
+      <section title="Option with 16-bit integer value">
+        <t>This option format can be used to carry 16-bit signed or unsigned
+        integer values:</t>
+        <figure align="center" anchor="option-with-16-bit-integer-format"
+                title="Option with 16-bit integer value">
+          <artwork><![CDATA[ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|          option-code          |           option-len          |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|         16-bit-integer        |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork>
+        </figure>
+        <t>Examples of use:
+          <list style="symbols">
+            <t><xref target="RFC3315">Elapsed Time</xref></t>
+          </list>
+        </t>
 
-        <ttcol align="left">Types of Uses</ttcol>
+      </section>
 
-        <c>ipv6-address</c>
+      <section title="Option with 8-bit integer value">
+        <t>This option format can be used to carry 8-bit integer values:</t>
+        <figure align="center" anchor="option-with-8-bit-integer-format"
+                title="Option with 8-bit integer value">
+          <artwork><![CDATA[ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|          option-code          |          option-len           |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| 8-bit-integer |
++-+-+-+-+-+-+-+-+
+]]></artwork>
+        </figure>
+        <t>Examples of use:
+          <list style="symbols">
+            <t><xref target="RFC3315">DHCPv6 Preference</xref></t>
+          </list>
+        </t>
 
-        <c>16</c>
+      </section>
 
-        <c><xref target="RFC3315">DHCPv6 server unicast address</xref>,
-        addresses of servers (<xref target="RFC3319"></xref>, <xref
-        target="RFC3646"></xref>, <xref target="RFC3898"></xref>, <xref
-        target="RFC4075"></xref>, <xref target="RFC4280"></xref>).</c>
+      <section title="Option with variable length data">
+        <t>This option can be used to carry variable length data of
+        any kind. Internal representation of carried data is option
+        specific. Some of the existing DHCPv6 options use NVT-ASCII
+        strings to encode: filenames, host or domain names, protocol
+        features or textual messages such as verbose error indicators.</t>
+        <t>This option format provides a lot of flexibility to pass
+        data of almost any kind. Though, whenever possible it is highly
+        recommended to use more specialized options, with field types
+        better matching carried data types.</t>
 
-        <c>32-bit integer</c>
+        <figure align="center" anchor="option-with-variable-length-data-format"
+                title="Option with variale length data">
+          <artwork><![CDATA[ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|          option-code          |         option-len            |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+.                                                               .
+.                      variable length data                     .
+.                                                               .
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork>
+        </figure>
+        <t>Examples of use:
+          <list style="symbols">
+            <t><xref target="RFC3315">Client Identifier</xref></t>
+            <t><xref target="RFC3315">Server Identifier</xref></t>
+            <t><xref target="RFC5970">Boot File URL</xref></t>
+          </list>
+        </t>
 
-        <c>4</c>
+      </section>
 
-        <c>Signed or unsigned varieties. Example of unsigned value is 
-        Information refresh time <xref target="RFC4242" />.</c>
+      <section title="Option with DNS Wire Format Domain Name List">
+        <t>This option is used to carry 'domain search' lists or any
+        host or domain name:</t>
+        <figure align="center" anchor="option-with-dns-domain-name-list-format"
+                title="Option with DNS Wire Format Domain Name List">
+          <artwork><![CDATA[ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|          option-code          |         option-length         |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|               DNS Wire Format Domain Name List                |
+|                              ...                              |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork>
+        </figure>
+        <t>Examples of use:
+          <list style="symbols">
+            <t><xref target="RFC3319">SIP Servers Domain Name List</xref></t>
+            <t><xref target="RFC3898">NIS Domain Name</xref></t>
+          </list>
+        </t>
 
-        <c>16-bit integer</c>
+      </section>
 
-        <c>2</c>
-
-        <c>Client configuration parameters, the <xref target="RFC3315">elapsed
-        time option</xref> in DHCPv6.</c>
-
-        <c>8-bit integer</c>
-
-        <c>1</c>
-
-        <c>Used for host configuration parameters, <xref
-        target="RFC3315">DHCPv6 Preference</xref>.</c>
-
-        <c>NVT-ASCII Text</c>
-
-        <c>unlim</c>
-        <!-- tomek: not unlimited! It is somewhere around 64k, but that is
-        not unlimited. -->
-
-        <c>This is the kitchen sink of common fragments. Common uses are for
-        filenames (such as TFTP paths), host or domain names (but this should
-        be discouraged), or protocol features such as textual messages such as
-        verbose error indicators. Since the size of this format cannot be
-        determined (it is not NULL terminated), it consumes any remaining
-        space in the option.</c>
-
-        <c><xref target="RFC1035">DNS Wire Format Domain Name List</xref></c>
-
-        <c>unlim</c>
-        <!-- tomek: it is not unlimited! each label is restricted to 63
-        octets and the whole FQDN is restricted to 255 octets! -->
-
-        <c>Presently used for 'domain search' lists in DHCPv6 <xref
-        target="RFC3646"></xref>, for any host or domain name. A field
-        formatted this way may have a determinate length if the number of root
-        labels is limited.</c>
-
-        <c>'suboption' encapsulation</c>
-
-        <c>unlim</c>
-
-        <c>?No current use case in DHCPv6 options?</c>
-        <!-- tomek: not true! There are many suboptions in DHCPv6: see
-        OPTION_IA_NA, OPTION_IA_PD, OPTION_IA_TA. Hey, even OPTION_IAADDRESS
-        can have suboptions (none are defined so far, though) -->
-      </texttable>
-
-      <!-- tomek: We should put actual formats here and get rid of the table.
-       I had a discussion with Marcin and he volunteered to do the work. -->
-
-      <t>The easiest approach to manufacturing trivially deployable DHCPv6
-      Options is to assemble the option out of whatever common fragments fit -
-      possibly allowing a group of fragments to repeat to fill the remaining
-      space (if present) and so provide multiple values. Place all fixed size
-      values at the start of the option, and any variable/indeterminate sized
-      value at the tail end of the option.</t>
-
-      <t>This estimates that implementations will be able to reuse code paths
-      designed to support the other options.</t>
     </section>
 
     <section title="Avoid Conditional Formatting">
@@ -680,6 +764,7 @@
       &rfc4242;
       &rfc4280;
       &rfc4704;
+      &rfc5970;
       &rfc6603;
     </references>
 
