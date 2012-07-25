@@ -133,7 +133,7 @@
       are not merely faced with the task of handling a given option's
       format on the wire. The option must fit into every stage of
       the system's process, starting with the user interface used to
-      enter the configuration upto the machine interfaces where
+      enter the configuration up to the machine interfaces where
       configuration is ultimately consumed. <!-- To help understand the potential
       implementation challenges of any new DHCP Option, <xref
       target="isc">one implementation's approach to tackling DHCP
