@@ -22,7 +22,7 @@
 <!ENTITY rfc5970 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5970.xml">
 <!ENTITY rfc6603 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6603.xml">
 ]>
-<rfc category="info" docName="draft-ietf-dhc-option-guidelines-08"
+<rfc category="info" docName="draft-ietf-dhc-option-guidelines-09"
      ipr="trust200902">
   <front>
     <title abbrev="DHCPv6 Option Guidelines">Guidelines for Creating New
@@ -280,6 +280,32 @@
         </t>
       </section>
 
+      <section title="Option with a single flag (boolean)">
+	<t>Sometimes it is useful to convey a single flag that can either
+	take on or off values. Instead of specifying an option with one
+	bit of usable data and 7 bits of padding, it is better to define
+	an option without any content. It is the presence or absence of
+	that option conveys the value. This approach has the additional
+	benefit of absent option designating the default, i.e. administrator
+	have to take explicit actions to deploy the oposite of the default
+	value.</t>
+        <figure align="center" anchor="option-with-boolean-format"
+                title="Option for conveying boolean">
+          <artwork><![CDATA[ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|          option-code          |           option-len          |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork>
+	</figure>
+
+        <t>Examples of use:
+          <list style="symbols">
+            <t><xref target="RFC3315">DHCPv6 rapid-commit</xref></t>
+          </list>
+        </t>
+      </section>
+
       <section title="Option with 32-bit integer value">
         <t>This option format can be used to carry 32 bit-signed or unsigned
         integer value:</t>
@@ -402,6 +428,51 @@
 
       </section>
 
+      <section title="Option with IPv6 Prefix">
+	<t>Some options need to convey IPv6 prefix. Such a prefix includes
+	the prefix itself and a prefix length. The simple approach would be to
+	define a 128 bit field denoting a prefix, followed by a 8 bit field that
+	specifies prefix length. This approach was used in OPTION_IAPREFIX,
+	defined in <xref target="RFC3633"/>. That approach is no longer
+	recommended and should not be used anymore.</t>
+	<t>In many cases prefix lengths are /64 or even shorter. That means that
+	every option conveys many zeroes bits that are useless. For example
+	for /48 there are 10 bytes of useless data. This waste is mulitpled
+	with the number of option instances in a message. Therefore a different
+	approach should be used. Prefixes should be conveyed as 8 bit prefix length
+	field that is followed by variable length prefix.</t>
+        <figure align="center" anchor="option-with-ipv6-prefix-format"
+                title="Option with IPv6 Prefix">
+          <artwork><![CDATA[ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|          option-code          |         option-length         |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|  prefix6-len  |                                               |
++-+-+-+-+-+-+-+-+           ipv6-prefix                         |
+|                       (variable length)                       |
+|                                                               |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork>
+        </figure>
+
+        <t>The following description of the fields can be included in 
+	the draft:
+	  <list style="symbols">
+            <t>prefix6-len: 8 bits long field expressing the bit mask length
+            of the IPv6 prefix specified in the ipv6-prefix field.</t>
+
+            <t>ipv6-prefix: a variable length field that specifies the
+            IPv6 domain prefix for the MAP rule. The field is padded with
+            zeros up to the nearest octet boundary when prefix6-len is not
+            divisible by 8.</t>
+	  </list>
+	</t>
+	<t>It should be pointed out that similar optimization does
+	not provide useful savings in case of IPv4 prefixes. IPv4 prefixes
+	should be sent as a 32 bits fields.</t>
+      </section>
+
     <!-- tomek: need to describe prefix encoding. RFC3633 used fixed
          length (128 bits + 8 bits for length), but that is not
          optimal. Ted Lemon recommends that we should use variable
@@ -425,7 +496,7 @@
       deprecated.</t>
     </section>
 
-    <section title="Avoid Aliasing">
+    <section anchor="aliasing" title="Avoid Aliasing">
       <t>Options are said to be aliases of each other if they provide input to
       the same configuration parameter. A commonly proposed example is to
       configure the location of some new service ("my foo server") using a
@@ -457,6 +528,14 @@
       requirements, be that for simplicity (such as with an IP address and
       port pair), late binding (such as with DNS), or completeness (such as
       with a URL).</t>
+    </section>
+
+    <section title="Choosing between FQDN or address">
+      <t>Some parameters may be specified as FQDN or an address. It is not
+      allowed to define both option types at the same time (see section 
+      <xref target="aliasing"/>), so one of them must be chosen. This
+      section is intended as a help to make an informed decision in that
+      regard.</t>
 
       <t>On the specific subject of desiring to configure a value using a FQDN
       instead of a binary IP address, note that most DHCPv6 server
@@ -468,6 +547,45 @@
       non-trivial use of power, and the extra RTT delays the client must
       endure before the service is configured are at least two factors to
       consider in making a decision on format.</t>
+
+      <t>Unless there are specific reasons to do otherwise, address should
+      be used. It is simpler to use, its validation is trivial (length 
+      of 16 constitutes a valid option), is explicit and does not allow
+      any ambiguity. It is faster (does not require extra resolution efforts),
+      so it is more efficient, which can be especially important for
+      energy restricted devices.</t>
+
+      <t>FQDN does require a resolution into an actual address. This implies
+      number of questions that should be answered. First is when should
+      the resolution be taken. There are couple possible answers: a) on the
+      server side, when the DHCP server is stated, b) by the server, when it
+      is about to send an option, c) by the client, immediately after
+      receiving an option, d) by the client, when the content of the option
+      is really needed. For a), b) and possibly c), the option should really
+      convey an address, not FQDN. The only real incentive to use FQDN is
+      case d). It allows possible changes in the DNS to be picked up by 
+      clients.</t>
+      <t>FQDN imposes number of additional failure modes and issues that
+      should be dealt with:
+      <list>
+	<t>The client must have a knowledge about available DNS servers. That
+	typically means that option DNS_SERVERS is mandatory. It is possible
+	that the server will return FQDN option, but not the DNS Servers option.
+	There should be a brief discussion about it;</t>
+	<t>The DNS may not be reachable;</t>
+	<t>DNS may be available, but may not have appropriate information
+	(e.g. no AAAA records for specified FQDN)</t>
+	<t>Address family must be specified (A, AAAA or any).</t>
+	<t>What should the client do if there are multiple records available
+	(use only the first one, use all, use one and switch to the second
+	if the first fails for whatever reason, etc.)</t>
+	<t>Multi-homed devices may be connected to different administrative
+	domains with each domain providing a different information in DNS (e.g.
+	an enterprise network exposing private domains). Client may send
+	DNS queries to a different DNS server;</t>
+	<t>It should be mentioned if Internationalized Domain Names are allowed.
+	If they are, what kind of DNS option encoding should be specified.</t>
+      </list></t>
     </section>
 
     <section title="Suboptions in DHCPv6">
@@ -514,13 +632,13 @@
       experienced protocol designers often assume that it is easy to
       define an option that will convey a different parameter for each
       node in a network. Such problems arose during designs of MAP
-      <xref target="I-D.mdt-softwire-map-dhcp-option"/>
+      <xref target="I-D.ietf-softwire-map-dhcp"/>
       and 4rd <xref target="I-D.ietf-softwire-4rd"/>. While it
       would be easier for provisioned nodes to get ready to use per
       node option values, such requirement puts exceedingly large
       loads on the server side. Alternatives should be considered,
       if possible. As an example, <xref
-      target="I-D.mdt-softwire-map-dhcp-option"/> was designed in a
+      target="I-D.ietf-softwire-map-dhcp"/> was designed in a
       way that all nodes are provisioned with the same set of MAP
       options and each provisioned node uses its unique address and
       delegated prefix to generate node-specific information. Such
@@ -783,11 +901,8 @@
       &rfc4704;
       &rfc5970;
       &rfc6603;
-    </references>
-
-    <references title="Informative References">
       <?rfc include='reference.I-D.ietf-dhc-secure-dhcpv6'?>
-      <?rfc include='reference.I-D.mdt-softwire-map-dhcp-option'?>
+      <?rfc include='reference.I-D.ietf-softwire-map-dhcp'?>
       <?rfc include='reference.I-D.ietf-softwire-4rd'?>
     </references>
 
