@@ -19,8 +19,11 @@
 <!ENTITY rfc4242 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4242.xml">
 <!ENTITY rfc4280 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4280.xml">
 <!ENTITY rfc4704 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4704.xml">
+<!ENTITY rfc5908 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5908.xml">
 <!ENTITY rfc5970 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5970.xml">
+<!ENTITY rfc6334 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6334.xml">
 <!ENTITY rfc6603 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6603.xml">
+<!ENTITY rfc6610 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6610.xml">
 ]>
 <rfc category="info" docName="draft-ietf-dhc-option-guidelines-09"
      ipr="trust200902">
@@ -245,7 +248,8 @@
 
       <section title="Option with IPv6 addresses">
         <t>This option format is used to carry one or many IPv6
-        addresses:</t>
+        addresses. In some cases the number of allowed address is limited
+	(e.g. to one):</t>
         <figure align="center" anchor="option-with-ipv6-address-format"
                 title="Option with IPv6 address">
           <artwork><![CDATA[ 0                   1                   2                   3
@@ -276,6 +280,12 @@
             <t><xref target="RFC4075">SNTP Servers</xref></t>
             <t><xref target="RFC4280">Broadcast and Multicast Service
             Controller IPv6 Address Option for DHCPv6</xref></t>
+	    <t><xref target="RFC6610">MIPv6 Home Agent Address</xref> (a single
+	    address only)</t>
+	    <t><xref target="RFC5908">NTP server</xref> (a single
+	    address only)</t>
+	    <t><xref target="RFC5908">NTP Multicast address</xref> (a single
+	    address only)</t>
           </list>
         </t>
       </section>
@@ -285,9 +295,9 @@
 	take on or off values. Instead of specifying an option with one
 	bit of usable data and 7 bits of padding, it is better to define
 	an option without any content. It is the presence or absence of
-	that option conveys the value. This approach has the additional
+	the option that conveys the value. This approach has the additional
 	benefit of absent option designating the default, i.e. administrator
-	have to take explicit actions to deploy the oposite of the default
+	has to take explicit actions to deploy the oposite of the default
 	value.</t>
         <figure align="center" anchor="option-with-boolean-format"
                 title="Option for conveying boolean">
@@ -421,8 +431,15 @@
         </figure>
         <t>Examples of use:
           <list style="symbols">
-            <t><xref target="RFC3319">SIP Servers Domain Name List</xref></t>
-            <t><xref target="RFC3898">NIS Domain Name</xref></t>
+            <t><xref target="RFC3319">SIP Servers Domain Name List</xref>
+	    (many domains)</t>
+            <t><xref target="RFC3898">NIS Domain Name (many domains)</xref>
+	    (many domains)</t>
+	    <t><xref target="RFC6334">DS-Lite AFTR location</xref>
+	    (a single FQDN)</t>
+	    <t><xref target="RFC6610">Home Network Identifier</xref>
+	    (a single FQDN)</t>
+	    <t><xref target="RFC6610">Home Agent FQDN</xref>(a single FQDN)</t>
           </list>
         </t>
 
@@ -435,10 +452,10 @@
 	specifies prefix length. This approach was used in OPTION_IAPREFIX,
 	defined in <xref target="RFC3633"/>. That approach is no longer
 	recommended and should not be used anymore.</t>
-	<t>In many cases prefix lengths are /64 or even shorter. That means that
+	<t>In many cases configured prefix lengths are /64 or even shorter. That means that
 	every option conveys many zeroes bits that are useless. For example
 	for /48 there are 10 bytes of useless data. This waste is mulitpled
-	with the number of option instances in a message. Therefore a different
+	by the number of option instances in a message. Therefore a different
 	approach should be used. Prefixes should be conveyed as 8 bit prefix length
 	field that is followed by variable length prefix.</t>
         <figure align="center" anchor="option-with-ipv6-prefix-format"
@@ -463,22 +480,15 @@
             of the IPv6 prefix specified in the ipv6-prefix field.</t>
 
             <t>ipv6-prefix: a variable length field that specifies the
-            IPv6 domain prefix for the MAP rule. The field is padded with
-            zeros up to the nearest octet boundary when prefix6-len is not
-            divisible by 8.</t>
+            IPv6 prefix for (explain purpose of the prefix). The field
+	    is padded with zeros up to the nearest octet boundary when
+	    prefix6-len is not divisible by 8.</t>
 	  </list>
 	</t>
 	<t>It should be pointed out that similar optimization does
 	not provide useful savings in case of IPv4 prefixes. IPv4 prefixes
 	should be sent as a 32 bits fields.</t>
       </section>
-
-    <!-- tomek: need to describe prefix encoding. RFC3633 used fixed
-         length (128 bits + 8 bits for length), but that is not
-         optimal. Ted Lemon recommends that we should use variable
-         prefix length to save space. In most cases /64 prefixes are
-         used, so the last 8 bytes are zeros. -->
-
     </section>
 
     <section title="Avoid Conditional Formatting">
@@ -530,7 +540,7 @@
       with a URL).</t>
     </section>
 
-    <section title="Choosing between FQDN or address">
+    <section title="Choosing between FQDN and address">
       <t>Some parameters may be specified as FQDN or an address. It is not
       allowed to define both option types at the same time (see section 
       <xref target="aliasing"/>), so one of them must be chosen. This
@@ -557,28 +567,29 @@
 
       <t>FQDN does require a resolution into an actual address. This implies
       number of questions that should be answered. First is when should
-      the resolution be taken. There are couple possible answers: a) on the
-      server side, when the DHCP server is stated, b) by the server, when it
+      the resolution be taken. There are couple possible answers: a) by the
+      server, when it is started, b) by the server, when it
       is about to send an option, c) by the client, immediately after
       receiving an option, d) by the client, when the content of the option
-      is really needed. For a), b) and possibly c), the option should really
+      is actually consumed. For a), b) and possibly c), the option should really
       convey an address, not FQDN. The only real incentive to use FQDN is
-      case d). It allows possible changes in the DNS to be picked up by 
-      clients.</t>
+      case d). It is the only case that allows possible changes in the DNS to
+      be picked up by clients.</t>
       <t>FQDN imposes number of additional failure modes and issues that
       should be dealt with:
       <list>
 	<t>The client must have a knowledge about available DNS servers. That
-	typically means that option DNS_SERVERS is mandatory. It is possible
+	typically means that option DNS_SERVERS is mandatory. This should be
+	mentioned in the draft that defines new option. It is possible
 	that the server will return FQDN option, but not the DNS Servers option.
 	There should be a brief discussion about it;</t>
 	<t>The DNS may not be reachable;</t>
 	<t>DNS may be available, but may not have appropriate information
 	(e.g. no AAAA records for specified FQDN)</t>
-	<t>Address family must be specified (A, AAAA or any).</t>
+	<t>Address family must be specified (A, AAAA or any);</t>
 	<t>What should the client do if there are multiple records available
 	(use only the first one, use all, use one and switch to the second
-	if the first fails for whatever reason, etc.)</t>
+	if the first fails for whatever reason, etc.);</t>
 	<t>Multi-homed devices may be connected to different administrative
 	domains with each domain providing a different information in DNS (e.g.
 	an enterprise network exposing private domains). Client may send
@@ -599,7 +610,7 @@
       example option type 1 meant different things in DHCPv4,
       depending if it was located in top-level or inside of Relay
       Agent Information option. There is no such ambiguity in
-      DHCPv6.</t>
+      DHCPv6 (with the exception of <xref target="RFC5908"/>).</t>
       <t>Such encapsulation mechanism is not limited to one
       level. There is at least one defined option that is encapsulated
       twice: Identity Association for Prefix Delegation (IA_PD,
@@ -826,6 +837,24 @@
       use of option encapsulation should be considered.</t>
     </section>
 
+    <section title="Transition Technologies">
+      <t>Transition from IPv4 to IPv6 is progressing, albeit at somewhat
+      disappointing pace. Many transition technologies are proposed
+      to speed it up. As a natural consequence there are also DHCP
+      options proposed to provision those proposals. The inevitable
+      question is that whether the required parameters should be
+      delivered over DHCPv4 or DHCPv6. Authors often don't give
+      much thought about it and simply pick DHCPv6 without realizing
+      the consequences. IPv6 is expected to stay with us for many
+      decades, and so is DHCPv6. There is no mechanism available
+      to deprecate an option in DHCPv6, so any options defined
+      will stay with us as long as DHCPv6 protocol itself. It seems
+      likely that such options defined to transition from IPv4 will
+      outlive IPv4 by many decades. From that perspective it is better
+      to implement provisioning of the transition technologies in
+      DHCPv4, which will be obsoleted together with IPv4.</t>
+    </section>
+
     <section title="Security Considerations">
       <t>DHCPv6 does have an Authentication mechanism (<xref
       target="RFC3315"></xref>) that makes it possible for DHCPv6
@@ -899,8 +928,11 @@
       &rfc4242;
       &rfc4280;
       &rfc4704;
+      &rfc5908;
       &rfc5970;
+      &rfc6334;
       &rfc6603;
+      &rfc6610;
       <?rfc include='reference.I-D.ietf-dhc-secure-dhcpv6'?>
       <?rfc include='reference.I-D.ietf-softwire-map-dhcp'?>
       <?rfc include='reference.I-D.ietf-softwire-4rd'?>
