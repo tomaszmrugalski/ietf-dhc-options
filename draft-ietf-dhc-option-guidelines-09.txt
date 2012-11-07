@@ -5,12 +5,12 @@ Dynamic Host Configuration Working                            D. Hankins
 Group                                                             Google
 Internet-Draft                                              T. Mrugalski
 Intended status: Informational                              M. Siodelski
-Expires: May 10, 2013                                                ISC
+Expires: May 11, 2013                                                ISC
                                                                 S. Jiang
                                             Huawei Technologies Co., Ltd
                                                              S. Krishnan
                                                                 Ericsson
-                                                        November 6, 2012
+                                                        November 7, 2012
 
 
                Guidelines for Creating New DHCPv6 Options
@@ -37,7 +37,7 @@ Status of this Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on May 10, 2013.
+   This Internet-Draft will expire on May 11, 2013.
 
 Copyright Notice
 
@@ -52,7 +52,7 @@ Copyright Notice
 
 
 
-Hankins, et al.           Expires May 10, 2013                  [Page 1]
+Hankins, et al.           Expires May 11, 2013                  [Page 1]
 
 Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
@@ -91,8 +91,9 @@ Table of Contents
    16. Transition Technologies  . . . . . . . . . . . . . . . . . . . 16
    17. Security Considerations  . . . . . . . . . . . . . . . . . . . 17
    18. IANA Considerations  . . . . . . . . . . . . . . . . . . . . . 18
-   19. Informative References . . . . . . . . . . . . . . . . . . . . 18
-   Authors' Addresses . . . . . . . . . . . . . . . . . . . . . . . . 19
+   19. Acknowledgements . . . . . . . . . . . . . . . . . . . . . . . 18
+   20. Informative References . . . . . . . . . . . . . . . . . . . . 18
+   Authors' Addresses . . . . . . . . . . . . . . . . . . . . . . . . 20
 
 
 
@@ -107,8 +108,7 @@ Table of Contents
 
 
 
-
-Hankins, et al.           Expires May 10, 2013                  [Page 2]
+Hankins, et al.           Expires May 11, 2013                  [Page 2]
 
 Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
@@ -164,7 +164,7 @@ Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
 
 
-Hankins, et al.           Expires May 10, 2013                  [Page 3]
+Hankins, et al.           Expires May 11, 2013                  [Page 3]
 
 Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
@@ -220,7 +220,7 @@ Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
 
 
-Hankins, et al.           Expires May 10, 2013                  [Page 4]
+Hankins, et al.           Expires May 11, 2013                  [Page 4]
 
 Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
@@ -276,7 +276,7 @@ Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
 
 
-Hankins, et al.           Expires May 10, 2013                  [Page 5]
+Hankins, et al.           Expires May 11, 2013                  [Page 5]
 
 Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
@@ -332,7 +332,7 @@ Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
 
 
-Hankins, et al.           Expires May 10, 2013                  [Page 6]
+Hankins, et al.           Expires May 11, 2013                  [Page 6]
 
 Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
@@ -388,7 +388,7 @@ Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
 
 
-Hankins, et al.           Expires May 10, 2013                  [Page 7]
+Hankins, et al.           Expires May 11, 2013                  [Page 7]
 
 Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
@@ -444,7 +444,7 @@ Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
 
 
-Hankins, et al.           Expires May 10, 2013                  [Page 8]
+Hankins, et al.           Expires May 11, 2013                  [Page 8]
 
 Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
@@ -500,7 +500,7 @@ Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
 
 
-Hankins, et al.           Expires May 10, 2013                  [Page 9]
+Hankins, et al.           Expires May 11, 2013                  [Page 9]
 
 Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
@@ -556,7 +556,7 @@ Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
 
 
-Hankins, et al.           Expires May 10, 2013                 [Page 10]
+Hankins, et al.           Expires May 11, 2013                 [Page 10]
 
 Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
@@ -612,7 +612,7 @@ Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
 
 
-Hankins, et al.           Expires May 10, 2013                 [Page 11]
+Hankins, et al.           Expires May 11, 2013                 [Page 11]
 
 Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
@@ -668,7 +668,7 @@ Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
 
 
-Hankins, et al.           Expires May 10, 2013                 [Page 12]
+Hankins, et al.           Expires May 11, 2013                 [Page 12]
 
 Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
@@ -724,7 +724,7 @@ Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
 
 
-Hankins, et al.           Expires May 10, 2013                 [Page 13]
+Hankins, et al.           Expires May 11, 2013                 [Page 13]
 
 Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
@@ -780,7 +780,7 @@ Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
 
 
-Hankins, et al.           Expires May 10, 2013                 [Page 14]
+Hankins, et al.           Expires May 11, 2013                 [Page 14]
 
 Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
@@ -836,7 +836,7 @@ Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
 
 
-Hankins, et al.           Expires May 10, 2013                 [Page 15]
+Hankins, et al.           Expires May 11, 2013                 [Page 15]
 
 Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
@@ -854,10 +854,17 @@ Internet-Draft          DHCPv6 Option Guidelines           November 2012
    It is a frequent mistake of option draft authors, then, to create
    text that implies that a server will simply provide the new option,
    and clients will digest it.  Generally, it's best to also specify
-   that clients MUST place the new option code on the relevant list
-   option, clients MAY include the new option in their packets to
-   servers with hints as to values they desire, and servers MAY respond
-   with the option contents (if they have been so configured).
+   that clients MUST place the new option code on the Option Request
+   Option list, clients MAY include the new option in their packets to
+   servers with hints as values they desire, and server MAY include the
+   option when the client requested it (and the server has been so
+   configured).
+
+   Example: Clients MUST place the foo option code on the Option Request
+   Option list, clients MAY include option foo in their packets as hints
+   for the server as values the desire, and servers MAY include option
+   foo when the client requested it (and the server has been so
+   configured).
 
    Creators of DHCPv6 options MUST NOT require special ordering of
    options either in the relevant request option, or in the order of
@@ -882,6 +889,14 @@ Internet-Draft          DHCPv6 Option Guidelines           November 2012
    proposed to provision those proposals.  The inevitable question is
    that whether the required parameters should be delivered over DHCPv4
    or DHCPv6.  Authors often don't give much thought about it and simply
+
+
+
+Hankins, et al.           Expires May 11, 2013                 [Page 16]
+
+Internet-Draft          DHCPv6 Option Guidelines           November 2012
+
+
    pick DHCPv6 without realizing the consequences.  IPv6 is expected to
    stay with us for many decades, and so is DHCPv6.  There is no
    mechanism available to deprecate an option in DHCPv6, so any options
@@ -889,14 +904,6 @@ Internet-Draft          DHCPv6 Option Guidelines           November 2012
    seems likely that such options defined to transition from IPv4 will
    outlive IPv4 by many decades.  From that perspective it is better to
    implement provisioning of the transition technologies in DHCPv4,
-
-
-
-Hankins, et al.           Expires May 10, 2013                 [Page 16]
-
-Internet-Draft          DHCPv6 Option Guidelines           November 2012
-
-
    which will be obsoleted together with IPv4.
 
 
@@ -938,20 +945,20 @@ Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
    For some option contents, out of bound values may be used to breach
    security.  An IP address field might be made to carry a loopback
+
+
+
+Hankins, et al.           Expires May 11, 2013                 [Page 17]
+
+Internet-Draft          DHCPv6 Option Guidelines           November 2012
+
+
    address, or local broadcast address, and depending on the protocol
    this may lead to undesirable results.  A domain name field may be
    filled with contrived contents that exceed the limitations placed
    upon domain name formatting... as this value is possibly delivered to
    "internal configuration" records of the system, it may be implicitly
    trusted without being validated.
-
-
-
-
-Hankins, et al.           Expires May 10, 2013                 [Page 17]
-
-Internet-Draft          DHCPv6 Option Guidelines           November 2012
-
 
    So it behooves an option's definition to contain any validation
    measures as can reasonably be made.
@@ -962,7 +969,13 @@ Internet-Draft          DHCPv6 Option Guidelines           November 2012
    This document has no actions for IANA.
 
 
-19.  Informative References
+19.  Acknowledgements
+
+   Authors would like to thank Simon Perreault and Bernie Volz for their
+   review.
+
+
+20.  Informative References
 
    [I-D.ietf-dhc-secure-dhcpv6]
               Jiang, S. and S. Shen, "Secure DHCPv6 Using CGAs",
@@ -988,6 +1001,14 @@ Internet-Draft          DHCPv6 Option Guidelines           November 2012
               Requirement Levels", BCP 14, RFC 2119, March 1997.
 
    [RFC3315]  Droms, R., Bound, J., Volz, B., Lemon, T., Perkins, C.,
+
+
+
+Hankins, et al.           Expires May 11, 2013                 [Page 18]
+
+Internet-Draft          DHCPv6 Option Guidelines           November 2012
+
+
               and M. Carney, "Dynamic Host Configuration Protocol for
               IPv6 (DHCPv6)", RFC 3315, July 2003.
 
@@ -1001,14 +1022,6 @@ Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
    [RFC3646]  Droms, R., "DNS Configuration options for Dynamic Host
               Configuration Protocol for IPv6 (DHCPv6)", RFC 3646,
-
-
-
-Hankins, et al.           Expires May 10, 2013                 [Page 18]
-
-Internet-Draft          DHCPv6 Option Guidelines           November 2012
-
-
               December 2003.
 
    [RFC3898]  Kalusivalingam, V., "Network Information Service (NIS)
@@ -1044,25 +1057,20 @@ Internet-Draft          DHCPv6 Option Guidelines           November 2012
               RFC 6334, August 2011.
 
    [RFC6603]  Korhonen, J., Savolainen, T., Krishnan, S., and O. Troan,
+
+
+
+Hankins, et al.           Expires May 11, 2013                 [Page 19]
+
+Internet-Draft          DHCPv6 Option Guidelines           November 2012
+
+
               "Prefix Exclude Option for DHCPv6-based Prefix
               Delegation", RFC 6603, May 2012.
 
    [RFC6610]  Jang, H., Yegin, A., Chowdhury, K., Choi, J., and T.
               Lemon, "DHCP Options for Home Information Discovery in
               Mobile IPv6 (MIPv6)", RFC 6610, May 2012.
-
-
-
-
-
-
-
-
-
-
-Hankins, et al.           Expires May 10, 2013                 [Page 19]
-
-Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
 
 Authors' Addresses
@@ -1102,6 +1110,17 @@ Authors' Addresses
    Email: jiangsheng@huawei.com
 
 
+
+
+
+
+
+
+Hankins, et al.           Expires May 11, 2013                 [Page 20]
+
+Internet-Draft          DHCPv6 Option Guidelines           November 2012
+
+
    Suresh Krishnan
    Ericsson
    8400 Blvd Decarie
@@ -1116,5 +1135,42 @@ Authors' Addresses
 
 
 
-Hankins, et al.           Expires May 10, 2013                 [Page 20]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hankins, et al.           Expires May 11, 2013                 [Page 21]
 
