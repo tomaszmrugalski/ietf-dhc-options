@@ -971,8 +971,8 @@ Internet-Draft          DHCPv6 Option Guidelines           November 2012
 
 19.  Acknowledgements
 
-   Authors would like to thank Simon Perreault and Bernie Volz for their
-   review.
+   Authors would like to thank Simon Perreault, Bernie Volz and Ted
+   Lemon for their comments.
 
 
 20.  Informative References
