@@ -1,6 +1,5 @@
 <?xml version='1.0' ?>
 
-<!-- $Id: draft-ietf-dhc-option-guidelines.xml,v 1.17 2010/03/06 01:03:43 dhankins Exp $ -->
 <?rfc toc="yes"?>
 <?rfc sortrefs="yes"?>
 <?rfc symrefs="yes"?>
@@ -313,6 +312,54 @@
           <list style="symbols">
             <t><xref target="RFC3315">DHCPv6 rapid-commit</xref></t>
           </list>
+        </t>
+      </section>
+
+      <section title="Option with IPv6 prefix">
+        <t>Sometimes there is a need to convey IPv6 prefix. The information that
+        should be delivered to the user is a 128-bit IPv6 prefix together with a
+        prefix length that takes values from 0 to 128. Using the simplest
+        approach, the option would convey that information as is. However, in
+        many cases /64 or shorter prefixes are used. That means that remaining
+        128 - prefix length bits are zeros. That means that in typical case case
+        of /64 prefixes the option would contains at least 8 bytes of useless
+        zeros. That should be avoided. For that reason the recommended format
+        for storing prefixes is as follows:</t>
+
+        <t><figure align="center" anchor="option-with-prefix-format"
+            title="Option with IPv6 Prefix">
+            <preamble></preamble>
+
+            <artwork align="center"><![CDATA[
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|        OPTION_MAP_DMR         |         option-length         |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|  prefix6-len  |              ipv6-prefix                      |
++-+-+-+-+-+-+-+-+           (variable length)                   |
+.                                                               .
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork>
+          </figure></t>
+
+        <t>Option-length is set to 1 + length of the IPv6 prefix. Prefix6-len
+        it one octet long and specifies prefix length of the IPv6 prefix
+        expressed in bits. Typically allowed values are 0 to 128.</t>
+
+        <t>ipv6-prefix field is a variable length field that specifies the
+        IPv6 prefix. This field is padded with zeros up to the nearest octet
+        boundary when prefix6-len is not divisible by 8.</t>
+
+        <t>Examples of use:
+          <list style="symbols">
+            <t><xref target="I-D.ietf-softwire-map-dhcp">Default Mapping Rule</xref></t>
+          </list>
+        </t>
+
+        <t>It should be noted that Prefix Delegation mechanism used in <xref
+        target="RFC3633" /> uses constant length prefixes. The concern about
+        option length was not well understood at the time of its publication.
         </t>
       </section>
 
