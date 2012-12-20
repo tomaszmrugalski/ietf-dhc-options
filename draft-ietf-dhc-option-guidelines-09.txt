@@ -4,13 +4,13 @@
 Dynamic Host Configuration Working                            D. Hankins
 Group                                                             Google
 Internet-Draft                                              T. Mrugalski
-Intended status: Informational                              M. Siodelski
-Expires: June 22, 2013                                               ISC
-                                                                S. Jiang
+Updates: 3315 (if approved)                                 M. Siodelski
+Intended status: Standards Track                                     ISC
+Expires: June 23, 2013                                          S. Jiang
                                             Huawei Technologies Co., Ltd
                                                              S. Krishnan
                                                                 Ericsson
-                                                       December 19, 2012
+                                                       December 20, 2012
 
 
                Guidelines for Creating New DHCPv6 Options
@@ -20,7 +20,8 @@ Abstract
 
    This document provides guidance to prospective DHCPv6 Option
    developers to help them creating option formats that are easily
-   adoptable by existing DHCPv6 software.
+   adoptable by existing DHCPv6 software.  This document updates
+   RFC3315.
 
 Status of this Memo
 
@@ -37,7 +38,7 @@ Status of this Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on June 22, 2013.
+   This Internet-Draft will expire on June 23, 2013.
 
 Copyright Notice
 
@@ -48,15 +49,15 @@ Copyright Notice
    Provisions Relating to IETF Documents
    (http://trustee.ietf.org/license-info) in effect on the date of
    publication of this document.  Please review these documents
-   carefully, as they describe your rights and restrictions with respect
 
 
 
-Hankins, et al.           Expires June 22, 2013                 [Page 1]
+Hankins, et al.           Expires June 23, 2013                 [Page 1]
 
 Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
 
+   carefully, as they describe your rights and restrictions with respect
    to this document.  Code Components extracted from this document must
    include Simplified BSD License text as described in Section 4.e of
    the Trust Legal Provisions and are provided without warranty as
@@ -107,8 +108,7 @@ Table of Contents
 
 
 
-
-Hankins, et al.           Expires June 22, 2013                 [Page 2]
+Hankins, et al.           Expires June 23, 2013                 [Page 2]
 
 Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
@@ -164,7 +164,7 @@ Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
 
 
-Hankins, et al.           Expires June 22, 2013                 [Page 3]
+Hankins, et al.           Expires June 23, 2013                 [Page 3]
 
 Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
@@ -220,7 +220,7 @@ Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
 
 
-Hankins, et al.           Expires June 22, 2013                 [Page 4]
+Hankins, et al.           Expires June 23, 2013                 [Page 4]
 
 Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
@@ -276,7 +276,7 @@ Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
 
 
-Hankins, et al.           Expires June 22, 2013                 [Page 5]
+Hankins, et al.           Expires June 23, 2013                 [Page 5]
 
 Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
@@ -332,7 +332,7 @@ Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
 
 
-Hankins, et al.           Expires June 22, 2013                 [Page 6]
+Hankins, et al.           Expires June 23, 2013                 [Page 6]
 
 Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
@@ -388,7 +388,7 @@ Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
 
 
-Hankins, et al.           Expires June 22, 2013                 [Page 7]
+Hankins, et al.           Expires June 23, 2013                 [Page 7]
 
 Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
@@ -444,7 +444,7 @@ Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
 
 
-Hankins, et al.           Expires June 22, 2013                 [Page 8]
+Hankins, et al.           Expires June 23, 2013                 [Page 8]
 
 Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
@@ -500,7 +500,7 @@ Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
 
 
-Hankins, et al.           Expires June 22, 2013                 [Page 9]
+Hankins, et al.           Expires June 23, 2013                 [Page 9]
 
 Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
@@ -530,7 +530,7 @@ Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
    o  Home Network Identifier [RFC6610] (a single FQDN)
 
-   o  Home Agent FQDN [RFC6610](a single FQDN)
+   o  Home Agent FQDN [RFC6610] (a single FQDN)
 
 5.9.  Option with IPv6 Prefix
 
@@ -556,7 +556,7 @@ Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
 
 
-Hankins, et al.           Expires June 22, 2013                [Page 10]
+Hankins, et al.           Expires June 23, 2013                [Page 10]
 
 Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
@@ -612,7 +612,7 @@ Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
 
 
-Hankins, et al.           Expires June 22, 2013                [Page 11]
+Hankins, et al.           Expires June 23, 2013                [Page 11]
 
 Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
@@ -668,7 +668,7 @@ Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
 
 
-Hankins, et al.           Expires June 22, 2013                [Page 12]
+Hankins, et al.           Expires June 23, 2013                [Page 12]
 
 Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
@@ -724,7 +724,7 @@ Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
 
 
-Hankins, et al.           Expires June 22, 2013                [Page 13]
+Hankins, et al.           Expires June 23, 2013                [Page 13]
 
 Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
@@ -780,7 +780,7 @@ Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
 
 
-Hankins, et al.           Expires June 22, 2013                [Page 14]
+Hankins, et al.           Expires June 23, 2013                [Page 14]
 
 Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
@@ -836,7 +836,7 @@ Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
 
 
-Hankins, et al.           Expires June 22, 2013                [Page 15]
+Hankins, et al.           Expires June 23, 2013                [Page 15]
 
 Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
@@ -892,7 +892,7 @@ Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
 
 
-Hankins, et al.           Expires June 22, 2013                [Page 16]
+Hankins, et al.           Expires June 23, 2013                [Page 16]
 
 Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
@@ -948,7 +948,7 @@ Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
 
 
-Hankins, et al.           Expires June 22, 2013                [Page 17]
+Hankins, et al.           Expires June 23, 2013                [Page 17]
 
 Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
@@ -1004,7 +1004,7 @@ Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
 
 
-Hankins, et al.           Expires June 22, 2013                [Page 18]
+Hankins, et al.           Expires June 23, 2013                [Page 18]
 
 Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
@@ -1050,23 +1050,20 @@ Internet-Draft          DHCPv6 Option Guidelines           December 2012
               draft-ietf-softwire-map-dhcp-01 (work in progress),
               August 2012.
 
-   [RFC1035]  Mockapetris, P., "Domain names - implementation and
-              specification", STD 13, RFC 1035, November 1987.
-
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119, March 1997.
 
    [RFC3315]  Droms, R., Bound, J., Volz, B., Lemon, T., Perkins, C.,
+              and M. Carney, "Dynamic Host Configuration Protocol for
+              IPv6 (DHCPv6)", RFC 3315, July 2003.
 
 
 
-Hankins, et al.           Expires June 22, 2013                [Page 19]
+
+Hankins, et al.           Expires June 23, 2013                [Page 19]
 
 Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
-
-              and M. Carney, "Dynamic Host Configuration Protocol for
-              IPv6 (DHCPv6)", RFC 3315, July 2003.
 
    [RFC3319]  Schulzrinne, H. and B. Volz, "Dynamic Host Configuration
               Protocol (DHCPv6) Options for Session Initiation Protocol
@@ -1113,16 +1110,16 @@ Internet-Draft          DHCPv6 Option Guidelines           December 2012
               RFC 6334, August 2011.
 
    [RFC6603]  Korhonen, J., Savolainen, T., Krishnan, S., and O. Troan,
+              "Prefix Exclude Option for DHCPv6-based Prefix
+              Delegation", RFC 6603, May 2012.
 
 
 
-Hankins, et al.           Expires June 22, 2013                [Page 20]
+
+Hankins, et al.           Expires June 23, 2013                [Page 20]
 
 Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
-
-              "Prefix Exclude Option for DHCPv6-based Prefix
-              Delegation", RFC 6603, May 2012.
 
    [RFC6610]  Jang, H., Yegin, A., Chowdhury, K., Choi, J., and T.
               Lemon, "DHCP Options for Home Information Discovery in
@@ -1172,7 +1169,10 @@ Authors' Addresses
 
 
 
-Hankins, et al.           Expires June 22, 2013                [Page 21]
+
+
+
+Hankins, et al.           Expires June 23, 2013                [Page 21]
 
 Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
@@ -1228,5 +1228,5 @@ Internet-Draft          DHCPv6 Option Guidelines           December 2012
 
 
 
-Hankins, et al.           Expires June 22, 2013                [Page 22]
+Hankins, et al.           Expires June 23, 2013                [Page 22]
 

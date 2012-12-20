@@ -6,7 +6,6 @@
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
 <!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
-<!ENTITY rfc1035 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.1035.xml">
 <!ENTITY rfc2119 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
 <!ENTITY rfc3315 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3315.xml">
 <!ENTITY rfc3319 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3319.xml">
@@ -24,8 +23,8 @@
 <!ENTITY rfc6603 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6603.xml">
 <!ENTITY rfc6610 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6610.xml">
 ]>
-<rfc category="info" docName="draft-ietf-dhc-option-guidelines-09"
-     ipr="trust200902">
+<rfc category="std" docName="draft-ietf-dhc-option-guidelines-09"
+     updates="3315" ipr="trust200902">
   <front>
     <title abbrev="DHCPv6 Option Guidelines">Guidelines for Creating New
     DHCPv6 Options</title>
@@ -113,7 +112,8 @@
     <abstract>
       <t>This document provides guidance to prospective DHCPv6 Option
       developers to help them creating option formats that are easily
-      adoptable by existing DHCPv6 software.</t>
+      adoptable by existing DHCPv6 software. This document updates
+      RFC3315.</t>
     </abstract>
   </front>
 
@@ -486,7 +486,7 @@
 	    (a single FQDN)</t>
 	    <t><xref target="RFC6610">Home Network Identifier</xref>
 	    (a single FQDN)</t>
-	    <t><xref target="RFC6610">Home Agent FQDN</xref>(a single FQDN)</t>
+	    <t><xref target="RFC6610">Home Agent FQDN</xref> (a single FQDN)</t>
           </list>
         </t>
 
@@ -975,7 +975,6 @@
     <!-- tomek: why do we have informative references 2 times, but
     no normative ones? -->
     <references title="Informative References">
-      &rfc1035;
       &rfc2119;
       &rfc3315;
       &rfc3319;
