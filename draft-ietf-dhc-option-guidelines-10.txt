@@ -359,11 +359,11 @@ Internet-Draft          DHCPv6 Option Guidelines           February 2013
    simplest approach, the option could convey this data in two fixed
    length fields: one carrying prefix length, another carrying the
    prefix.  However, in many cases /64 or shorter prefixes are used.
-   This implies that the large part of the prefix would have its bits
-   set to zeros.  In the typical case of /64 prefix the option would
-   convey at least 8 bytes of unused data.  In order to avoid it, it is
-   recommended to store prefix in the variable length data field.  The
-   appropriate option format is defined as follows:
+   This implies that the large part of the prefix data carried by the
+   option would have its bits set to zero and would be unused.  In order
+   to avoid carrying unused data, it is recommended to store prefix in
+   the variable length data field.  The appropriate option format is
+   defined as follows:
 
 
       0                   1                   2                   3
