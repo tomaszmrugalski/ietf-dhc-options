@@ -23,7 +23,7 @@
 <!ENTITY rfc6603 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6603.xml">
 <!ENTITY rfc6610 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6610.xml">
 ]>
-<rfc category="std" docName="draft-ietf-dhc-option-guidelines-09"
+<rfc category="std" docName="draft-ietf-dhc-option-guidelines-10"
      updates="3315" ipr="trust200902">
   <front>
     <title abbrev="DHCPv6 Option Guidelines">Guidelines for Creating New
@@ -63,13 +63,13 @@
       <organization abbrev="ISC"></organization>
       <address>
         <postal>
-          <street></street>
-          <city></city>
-          <region></region>
-          <code></code>
-          <country></country>
+          <street>950 Charter Street</street>
+          <city>Redwood City</city>
+          <region>CA</region>
+          <code>94063</code>
+          <country>USA</country>
         </postal>
-        <phone></phone>
+        <phone>+1 650 423 1431</phone>
         <email>msiodelski@gmail.com</email>
       </address>
     </author>
@@ -242,7 +242,7 @@
       options already allocated, and consider which of those solve a similar
       problem. So, the following list of common option format fragments is
       provided as a shorthand. Please note that it is not complete in terms of
-      exampling every option format ever devised...it is only a list of option
+      exampling every option format ever devised. It is only a list of option
       format fragments which are used in two or more options.</t>
 
       <section title="Option with IPv6 addresses">
@@ -316,15 +316,17 @@
       </section>
 
       <section title="Option with IPv6 prefix">
-        <t>Sometimes there is a need to convey IPv6 prefix. The information that
-        should be delivered to the user is a 128-bit IPv6 prefix together with a
-        prefix length that takes values from 0 to 128. Using the simplest
-        approach, the option would convey that information as is. However, in
-        many cases /64 or shorter prefixes are used. That means that remaining
-        128 - prefix length bits are zeros. That means that in typical case case
-        of /64 prefixes the option would contains at least 8 bytes of useless
-        zeros. That should be avoided. For that reason the recommended format
-        for storing prefixes is as follows:</t>
+        <t>Sometimes there is a need to convey IPv6 prefix. The information to
+        be carried by an option includes the 128-bit IPv6 prefix together with a
+        length of this prefix taking values from 0 to 128. Using the simplest
+        approach, the option could convey this data in two fixed length fields:
+        one carrying prefix length, another carrying the prefix. However,
+        in many cases /64 or shorter prefixes are used. This implies that the
+        large part of the prefix would have its bits set to zeros. In the typical
+        case of /64 prefix the option would convey at least 8 bytes of unused
+        data. In order to avoid it, it is recommended to store prefix in the
+        variable length data field. The appropriate option format is defined as
+        follows:</t>
 
         <t><figure align="center" anchor="option-with-prefix-format"
             title="Option with IPv6 Prefix">
@@ -334,7 +336,7 @@
  0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|        OPTION_MAP_DMR         |         option-length         |
+|          option-code          |         option-length         |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 |  prefix6-len  |              ipv6-prefix                      |
 +-+-+-+-+-+-+-+-+           (variable length)                   |
@@ -343,9 +345,9 @@
 ]]></artwork>
           </figure></t>
 
-        <t>Option-length is set to 1 + length of the IPv6 prefix. Prefix6-len
-        it one octet long and specifies prefix length of the IPv6 prefix
-        expressed in bits. Typically allowed values are 0 to 128.</t>
+        <t>option-length is set to 1 + length of the IPv6 prefix. prefix6-len
+        is one octet long and specifies the length in bits of the IPv6 prefix.
+        Typically allowed values are 0 to 128.</t>
 
         <t>ipv6-prefix field is a variable length field that specifies the
         IPv6 prefix. This field is padded with zeros up to the nearest octet
@@ -489,63 +491,18 @@
 	    <t><xref target="RFC6610">Home Agent FQDN</xref> (a single FQDN)</t>
           </list>
         </t>
-
       </section>
 
-      <section title="Option with IPv6 Prefix">
-	<t>Some options need to convey IPv6 prefix. Such a prefix includes
-	the prefix itself and a prefix length. The simple approach would be to
-	define a 128 bit field denoting a prefix, followed by a 8 bit field that
-	specifies prefix length. This approach was used in OPTION_IAPREFIX,
-	defined in <xref target="RFC3633"/>. That approach is no longer
-	recommended and should not be used anymore.</t>
-	<t>In many cases configured prefix lengths are /64 or even shorter. That means that
-	every option conveys many zeroes bits that are useless. For example
-	for /48 there are 10 bytes of useless data. This waste is mulitpled
-	by the number of option instances in a message. Therefore a different
-	approach should be used. Prefixes should be conveyed as 8 bit prefix length
-	field that is followed by variable length prefix.</t>
-        <figure align="center" anchor="option-with-ipv6-prefix-format"
-                title="Option with IPv6 Prefix">
-          <artwork><![CDATA[ 0                   1                   2                   3
- 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|          option-code          |         option-length         |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|  prefix6-len  |                                               |
-+-+-+-+-+-+-+-+-+           ipv6-prefix                         |
-|                       (variable length)                       |
-|                                                               |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-]]></artwork>
-        </figure>
-
-        <t>The following description of the fields can be included in 
-	the draft:
-	  <list style="symbols">
-            <t>prefix6-len: 8 bits long field expressing the bit mask length
-            of the IPv6 prefix specified in the ipv6-prefix field.</t>
-
-            <t>ipv6-prefix: a variable length field that specifies the
-            IPv6 prefix for (explain purpose of the prefix). The field
-	    is padded with zeros up to the nearest octet boundary when
-	    prefix6-len is not divisible by 8.</t>
-	  </list>
-	</t>
-	<t>It should be pointed out that similar optimization does
-	not provide useful savings in case of IPv4 prefixes. IPv4 prefixes
-	should be sent as a 32 bits fields.</t>
-      </section>
     </section>
 
     <section title="Avoid Conditional Formatting">
-      <t>Placing a octet at the start of the option which informs the software
+      <t>Placing an octet at the start of the option which informs the software
       how to process the remaining octets of the option may appear simple to
       the casual observer. But the only conditional formatting methods that
-      are in widespread use today are 'protocol' class options. So conditional
-      formatting requires new code to be written, as well as introduces an
-      implementation problem; as it requires that all speakers implement all
-      current and future conditional formats.</t>
+      are in widespread use today are 'protocol' class options. Therefore the
+      conditional formatting requires new code to be written, as well as
+      introduces an implementation problem; as it requires that all speakers
+      implement all current and future conditional formats.</t>
 
       <t>Conditional formatting is not recommended, except in cases
       where the DHCPv6 option has already been deployed
@@ -557,7 +514,7 @@
       <t>Options are said to be aliases of each other if they provide input to
       the same configuration parameter. A commonly proposed example is to
       configure the location of some new service ("my foo server") using a
-      binary IP address, a domain name field, and a URL. This kind of aliasing
+      binary IP address, a domain name field, and an URL. This kind of aliasing
       is undesirable, and is not recommended.</t>
 
       <t>In this case, where three different formats are supposed, it
@@ -566,7 +523,7 @@
       digest all three. Furthermore, code development and testing must
       cover all possible combinations of defined formats. Since
       clients cannot predict what values the server will provide, they
-      must request all formats... so in the case where the server is
+      must request all formats. So in the case where the server is
       configured with all formats, DHCPv6 option space is wasted on
       option contents that are redundant.</t>
 
@@ -613,15 +570,14 @@
       energy restricted devices.</t>
 
       <t>FQDN does require a resolution into an actual address. This implies
-      number of questions that should be answered. First is when should
-      the resolution be taken. There are couple possible answers: a) by the
-      server, when it is started, b) by the server, when it
-      is about to send an option, c) by the client, immediately after
-      receiving an option, d) by the client, when the content of the option
-      is actually consumed. For a), b) and possibly c), the option should really
-      convey an address, not FQDN. The only real incentive to use FQDN is
-      case d). It is the only case that allows possible changes in the DNS to
-      be picked up by clients.</t>
+      the question when the FQDN resolution should be taken. There are a
+      couple of possible answers: a) by the server, when it is started,
+      b) by the server, when it is about to send an option, c) by the client,
+      immediately after receiving an option, d) by the client, when the content
+      of the option is actually consumed. For a), b) and possibly c), the
+      option should really convey an address, not FQDN. The only real incentive
+      to use FQDN is case d). It is the only case that allows possible changes
+      in the DNS to be picked up by clients.</t>
       <t>FQDN imposes number of additional failure modes and issues that
       should be dealt with:
       <list>
@@ -709,12 +665,12 @@
       its own IA containers. For renewing other parameters, please use
       Information Refresh Time Option (defined in <xref
       target="RFC4242"/>). Introducing additional timers make
-      deployment unnecessarily complex. Please try to avoid it.</t>
+      deployment unnecessarily complex and should be avoided.</t>
     </section>
 
     <section title="Is DHCPv6 dynamic?">
       <t>DHCPv6 stands for Dynamic Host Configuration Protocol for
-      IPv6. Contrary to its name, is many contexts it is not
+      IPv6. Contrary to its name, in many contexts it is not
       dynamic. While designing DHCPv6 options, it is worth noting that
       there is no reliable way to instantly notify clients that
       something has happened, e.g. parameter value has changed. There
@@ -736,7 +692,7 @@
       <t>DHCPv6 was not initially designed with multiple provisioning
       domains. Although <xref target="RFC3315"/> states that a client
       that receives more than one ADVERTISE message, may respond to
-      one or more, such capability was never observed in any known
+      one or more of them, such capability was never observed in any known
       implementations. Existing clients will pick one server and will
       continue configuration process with that server, ignoring all
       other servers.</t>
@@ -844,15 +800,15 @@
     <section title="Clients Request their Options">
       <t>The <xref target="RFC3315">DHCPv6 Option Request Option
       (OPTION_ORO)</xref>, is an option that serves two purposes - to
-      inform the server what options the client supports and is
-      willing to consume.
+      inform the server what options the client supports and to inform
+      what options the client is willing to consume.
       <!-- tomek: order is not important in DHCPv6; there are no concerns
       with options not fitting in the packet in sane v6 implementations -->
       <!--, and in what order of priority the client places those option
           contents (in the event that they will not fit in the packet, later
           options are to be dropped).--></t>
 
-      <t>It doesn't make sense for some options to appear on this
+      <t>It doesn't make sense for some options to be requested using
       Option Request Option, such as those formed by elements of the
       protocol's internal workings, or are formed on either end by
       DHCPv6-level software engaged in some exchange of
@@ -953,7 +909,7 @@
         address, or local broadcast address, and depending on the protocol
         this may lead to undesirable results.  A domain name field may
         be filled with contrived contents that exceed the limitations
-        placed upon domain name formatting... as this value is possibly
+        placed upon domain name formatting - as this value is possibly
         delivered to "internal configuration" records of the system, it
         may be implicitly trusted without being validated.</t>
 
