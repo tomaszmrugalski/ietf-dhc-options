@@ -17,13 +17,15 @@
 <!ENTITY rfc4242 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4242.xml">
 <!ENTITY rfc4280 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4280.xml">
 <!ENTITY rfc4704 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4704.xml">
+<!ENTITY rfc5007 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5007.xml">
+<!ENTITY rfc5460 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5460.xml">
 <!ENTITY rfc5908 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5908.xml">
 <!ENTITY rfc5970 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5970.xml">
 <!ENTITY rfc6334 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6334.xml">
 <!ENTITY rfc6603 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6603.xml">
 <!ENTITY rfc6610 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6610.xml">
 ]>
-<rfc category="std" docName="draft-ietf-dhc-option-guidelines-10"
+<rfc category="std" docName="draft-ietf-dhc-option-guidelines-11"
      updates="3315" ipr="trust200902">
   <front>
     <title abbrev="DHCPv6 Option Guidelines">Guidelines for Creating New
@@ -86,7 +88,7 @@
       </address>
     </author>
 
-    <author initials="S.K." surname="Krishnan" fullname="Suresh Krishnan">
+    <author initials="S." surname="Krishnan" fullname="Suresh Krishnan">
       <organization>Ericsson</organization>
       <address>
 	<postal>
@@ -815,6 +817,7 @@
       option must be present on the relevant option request list if
       the client desires to receive it.</t>
 
+      <!--
       <t>It is a frequent mistake of option draft authors, then, to create
       text that implies that a server will simply provide the new option,
       and clients will digest it.  Generally, it's best to also specify
@@ -822,13 +825,21 @@
       Option list, clients MAY include the new option in their packets to
       servers with hints as values they desire, and server MAY include
       the option when the client requested it (and the server has been so
-      configured).</t>
+      configured).</t> -->
 
-      <t>Example: Clients MUST place the foo option code on the Option Request
-      Option list, clients MAY include option foo in their packets as
-      hints for the server as values the desire, and servers MAY include
-      option foo when the client requested it (and the server has been
-      so configured).</t>
+      <t>It is tempting to put a text that requires the client to include new
+      option in Option Request Option list, similar to this text: "Clients MUST
+      place the foo option code on the Option Request Option list, clients MAY
+      include option foo in their packets as hints for the server as values the
+      desire, and servers MUST include option foo when the client requested it
+      (and the server has been so configured)". Such a text is discouraged as
+      there are several issues with it. First, it assumes that client
+      implementation that supports a given option will always want to use
+      it. This is not true. The second and more important reason is that such a
+      text essentially duplicates mechanism already defined in <xref
+      target="RFC3315"/>. It is better to simply refer to existing mechanism
+      rather than define it again. See <xref target="templates"/> for proposed
+      examples on how to do that.</t>
 
       <t>Creators of DHCPv6 options MUST NOT require special ordering
       of options either in the relevant request option, or in the
@@ -862,6 +873,105 @@
       outlive IPv4 by many decades. From that perspective it is better
       to implement provisioning of the transition technologies in
       DHCPv4, which will be obsoleted together with IPv4.</t>
+    </section>
+
+    <section anchor="templates" title="Recommended sections">
+      <t>There are three major entities in DHCPv6 protocol: server, relay agent,
+      and client. There is also a separate entity called requestor, which is a
+      special client-like type that participates in leasequery protocol <xref
+      target="RFC5007"/> and <xref target="RFC5460"/>. It is very helpful for
+      implementors to include separate sections that describe operation for
+      those three major components. Even when a given entity does not
+      participate, it is useful to have a very short section stating that it
+      must not send a given option and must ignore it when received.</t>
+
+      <t>The following sections include proposed text for such sections. That
+      text is not required to appear, but it is appropriate in most
+      cases. Additional or modified text specific to a given option is often
+      required.</t>
+
+      <t>Although requestor is an uncommon functionality, its existence should
+      be noted, especially when allowing or disallowing options to appear in
+      certain message or being sent be certain entities. Additional message
+      types may appear in the future, besides types defined in <xref
+      target="RFC3315"/>. Therefore authors are encouraged to familiarize
+      themselves with a list of currently defined DHCPv6 messages available on
+      IANA website <xref target="iana"/>.</t>
+
+      <t>Typically new options are requested by clients and assigned by server,
+      so there is no specific relay behavior. Nevertheless it is good to include
+      a section for relay agent behaviour and simply state that there are no
+      additional requirements for relays. The same applies for client behavior
+      if the options are to be exchanged between relay and server.</t>
+
+      <t>Section that contain option definition MUST include formal verification
+      procedure. Often it is very simple, e.g. option that conveys IPv6 address
+      must be exactly 16 bytes long, but sometimes the rules are more complex.
+      It is recommeded to refer to existing documents (e.g. section 8 of RFC3315
+      for domain name enconding) rather than trying to repeat such rules.</t>
+      
+      <section anchor="template-client" title="DHCPv6 Client Behavior">
+	<t>Client MAY request option foo, as defined in <xref
+	target="RFC3315"/>, sections 17.1.1, 18.1.1, 18.1.3, 18.1.4, 18.1.5 and
+	22.7. As a convenience to the reader, we mention here that the client
+	includes requested option codes in Option Request Option.</t>
+
+	<t>Optional text (if client's hints make sense): Client also
+	MAY include option foo in its SOLICIT, REQUEST, RENEW, REBIND and
+	INFORMATION-REQUEST messages as a hint for the server regarding
+	preferred option values.</t>
+
+	<t>Optional text (if the option contains FQDN): If the client request an
+	option that conveys FQDN, it is expected that content of that option
+	will be resolved using DNS. Hence the following text may be useful:
+	Client that requests option foo SHOULD also request option
+	OPTION_DNS_SERVERS specified in <xref target="RFC3646"/>.</t>
+	
+	<t>Client MUST discard option foo if it is invalid (i.e. did not pass
+	validation steps defined in Section X.Y).</t>
+
+	<t>Optional text (if option foo in expected to be exchanged between
+	relays or request and server): Option foo is exchanged between relays
+	and servers only. Clients are not aware of the usage of option
+	foo. Clients MUST ignore received option foo.</t>
+      </section>
+
+      <section anchor="template-server" title="DHCPv6 Server Behavior">
+	<t>Sections 17.2.2 and 18.2 of <xref target="RFC3315"/> govern server
+	operation in regards of option assignment. As a convenience to the
+	reader, we mention here that the server will send option foo only if
+	configured with specific values for foo and client requested it.</t>
+	<t>Optional text: Server MUST NOT send more than one instance of
+	foo option.</t>
+
+	<t>Optional text (if server is never supposed to receive option foo):
+	Server MUST ignore incoming foo option.</t>
+      </section>
+
+      <section anchor="template-relay" title="DHCPv6 Relay Agent Behavior">
+	<t>Optional text (if foo option is exchanged between clients and server
+	or between requestors and servers): There are no additional requirements for
+	relays.</t>
+
+	<t>Optional text (if relays are expected to insert or consume option foo):
+	Relay agents MAY include option foo when forwarding packets from clients to
+	the server.</t>
+      </section>
+
+    </section>
+
+    <section title="Updating existing RFCs">
+      <t>Authors often ask themselves a question whether their proposal updates
+      exist RFCs, especially 3315. During time of writing this document there
+      were 79 options defined. Had all documents that defined them also updated
+      RFC3315, its comprehension of such a document would be extremely
+      difficult. It should be noted that "extends" and "updates" are two very
+      different verbs. If a new draft defines a new option that clients request
+      and servers provide, it merely extends current standards, so "updates
+      3315" is not required in the new document header. On the other hand, if
+      the new draft changes something in already defined behavior, e.g. servers
+      must discard incoming messages if option foo is invalid or missing, then
+      the "updates" phrase is warranted.</t>
     </section>
 
     <section title="Security Considerations">
@@ -941,6 +1051,8 @@
       &rfc4242;
       &rfc4280;
       &rfc4704;
+      &rfc5007;
+      &rfc5460;
       &rfc5908;
       &rfc5970;
       &rfc6334;
@@ -949,6 +1061,14 @@
       <?rfc include='reference.I-D.ietf-dhc-secure-dhcpv6'?>
       <?rfc include='reference.I-D.ietf-softwire-map-dhcp'?>
       <?rfc include='reference.I-D.ietf-softwire-4rd'?>
+
+      <reference anchor="iana" target="http://www.iana.org/assignments/dhcpv6-parameters/">
+	<front>
+	  <title>DHCPv6 parameters (IANA webpage)</title>
+	  <author fullname="IANA" surname="IANA"/>
+	  <date month="November" year="2003"/>
+	</front>
+      </reference>
     </references>
 
     <!--
