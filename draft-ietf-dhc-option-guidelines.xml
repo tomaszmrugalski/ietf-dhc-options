@@ -353,7 +353,7 @@
         <t>ipv6-prefix field is a variable length field that specifies the
         IPv6 prefix. This field is padded with zeros up to the nearest octet
         boundary when prefix6-len is not divisible by 8. This can be
-        expressed using the following equation: &gt;prefix6-len&lt;+7/8</t>
+        expressed using the following equation: &lt;prefix6-len&gt;+7/8</t>
 
         <t>Examples of use:
           <list style="symbols">
