@@ -352,13 +352,18 @@
 
         <t>ipv6-prefix field is a variable length field that specifies the
         IPv6 prefix. This field is padded with zeros up to the nearest octet
-        boundary when prefix6-len is not divisible by 8.</t>
+        boundary when prefix6-len is not divisible by 8. This can be
+        expressed using the following equation: &gt;prefix6-len&lt;+7/8</t>
 
         <t>Examples of use:
           <list style="symbols">
             <t><xref target="I-D.ietf-softwire-map-dhcp">Default Mapping Rule</xref></t>
           </list>
         </t>
+
+        <t>For example, the prefix 2001:db8::/60 would be encoded with an
+        option-length of 9, prefix-len would be set to 60, the ipv6-prefix would
+        be 8 octets and would contains octets 20 01 0d b8 00 00 00 00.</t>
 
         <t>It should be noted that Prefix Delegation mechanism used in <xref
         target="RFC3633" /> uses constant length prefixes. The concern about
@@ -525,8 +530,9 @@
       cover all possible combinations of defined formats. Since
       clients cannot predict what values the server will provide, they
       must request all formats. So in the case where the server is
-      configured with all formats, DHCPv6 option space is wasted on
-      option contents that are redundant.</t>
+      configured with all formats, DHCPv6 message bandwidth is wasted on
+      option contents that are redundant. Also, the DHCPv6 option space is 
+      wasted, as three new option codes are required, rather than one.</t>
 
       <t>It also becomes unclear which types of values are mandatory, and how
       configuring some of the options may influence the others. For example,
@@ -581,7 +587,7 @@
       in the DNS to be picked up by clients.</t>
       <t>FQDN imposes number of additional failure modes and issues that
       should be dealt with:
-      <list>
+      <list style="numbers">
 	<t>The client must have a knowledge about available DNS servers. That
 	typically means that option DNS_SERVERS is mandatory. This should be
 	mentioned in the draft that defines new option. It is possible
@@ -589,7 +595,7 @@
 	There should be a brief discussion about it;</t>
 	<t>The DNS may not be reachable;</t>
 	<t>DNS may be available, but may not have appropriate information
-	(e.g. no AAAA records for specified FQDN)</t>
+	(e.g. no AAAA records for specified FQDN);</t>
 	<t>Address family must be specified (A, AAAA or any);</t>
 	<t>What should the client do if there are multiple records available
 	(use only the first one, use all, use one and switch to the second
@@ -603,28 +609,38 @@
       </list></t>
     </section>
 
-    <section title="Suboptions in DHCPv6">
+    <section title="Encapsulated options in DHCPv6">
       <t>Most options are conveyed in a DHCPv6 message
       directly. Although there is no codified normative language for
       such options, they are often referred to as top-level
       options. Many options may include other options. Such inner
-      options are often referred to as sub-options. It should be noted
+      options are often referred to as encapsulated or nested options.
+      Those options are sometimes called sub-options, but this term is
+      not precise and thus discouraged. It is recommened to use term
+      "encapsulated" as this terminology is used in <xref target="RFC3315"/>.
+      The difference between encapsulated
+      and sub-options are that the former uses normal DHCPv6 option
+      space codes, while the latter uses option space specific to
+      a given parent option. It should be noted
       that, contrary to DHCPv4, there is no shortage of option
-      numbers. Therefore all options share a common option space. For
+      numbers. Therefore almost all options share a common option space. For
       example option type 1 meant different things in DHCPv4,
       depending if it was located in top-level or inside of Relay
       Agent Information option. There is no such ambiguity in
-      DHCPv6 (with the exception of <xref target="RFC5908"/>).</t>
-      <t>Such encapsulation mechanism is not limited to one
-      level. There is at least one defined option that is encapsulated
-      twice: Identity Association for Prefix Delegation (IA_PD,
-      defined in <xref target="RFC3633"/>, section 9) conveys IA
-      Prefix (IAPREFIX, defined in <xref target="RFC3633"/>, section
-      10). Such delegated prefix may contain an excluded prefix range
-      that is represented by PD_EXCLUDE option that is conveyed as
-      sub-option inside IAPREFIX (PD_EXCLUDE, defined in <xref
-      target="RFC6603"/>).  It seems awkward to refer to such options
-      as sub-sub-option, therefore "sub-option" term is typically
+      DHCPv6 (with the unfortunate exception of <xref target="RFC5908"/>).</t>
+      <t>From the implementation perspective, it is easier to implement
+      encapsulated option rather than sub-option, as the implementor do
+      not have to deal with separate option spaces and can use the same
+      buffer parser in several places throughout the code.</t>
+      <t>Such encapsulation mechanism is not limited to one level. There is at
+      least one defined option that is encapsulated twice: Identity Association
+      for Prefix Delegation (IA_PD, defined in <xref target="RFC3633"/>, section
+      9) conveys IA Prefix (IAPREFIX, defined in <xref target="RFC3633"/>,
+      section 10). Such delegated prefix may contain an excluded prefix range
+      that is represented by PD_EXCLUDE option that is conveyed as sub-option
+      inside IAPREFIX (PD_EXCLUDE, defined in <xref target="RFC6603"/>).  It
+      seems awkward to refer to such options as sub-sub-option or doubly
+      encapsulated option, therefore "encapsulated option" term is typically
       used, regardless of the nesting level.</t>
 
       <t>When defining configuration means for more complex
@@ -682,7 +698,7 @@
       means that provisioning server is the only one that can initiate
       reconfiguration. Other servers do not know it and cannot trigger
       reconfiguration. Therefore the only reliable way for clients to
-      refresh their configuration is to wait till T1 expires.</t>
+      refresh their configuration is to wait until T1 expires.</t>
     </section>
 
     <section title="Multiple provisioning domains">
@@ -718,6 +734,9 @@
         of a similar format would need to have multiple or single values
         encoded (whatever differs from the current option), and how that
         might be accomplished in a similar format.</t>
+        
+      <t>The matter of size considerations is further discussed in
+      <xref target="fragmentation"/>.</t>
     </section>
 
     <!-- <section title="The Dangers of Sub Options">
@@ -785,8 +804,11 @@
       divides those too big from the workable.</t>
 
       <t>It is advantageous to prefer option formats which contain the desired
-      information in the smallest form factor that satisfies the
-      requirements.</t>
+      information in the smallest form factor that satisfies the requirements. A
+      common sense still applies here. It is better to split distinct values
+      into separate octects rather than propose overly complex bit shifting
+      operations to save up several bits (or even an octet or two) that would be
+      padded to the next octet boundary anyway.</t>
 
       <t>DHCPv6 does allow for multiple instances of a given option,
       and they are treated as distinct values following the defined
