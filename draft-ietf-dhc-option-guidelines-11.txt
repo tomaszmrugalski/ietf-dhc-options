@@ -1252,7 +1252,7 @@ Authors' Addresses
    Email: dhankins@google.com
 
 
-   Tomasz Mrugalski
+   Tomek Mrugalski
    Internet Systems Consortium, Inc.
    950 Charter Street
    Redwood City, CA  94063
