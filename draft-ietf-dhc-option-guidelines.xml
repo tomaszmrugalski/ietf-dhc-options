@@ -875,7 +875,7 @@
       DHCPv4, which will be obsoleted together with IPv4.</t>
     </section>
 
-    <section anchor="templates" title="Recommended sections">
+    <section anchor="templates" title="Recommended sections in the new document">
       <t>There are three major entities in DHCPv6 protocol: server, relay agent,
       and client. There is also a separate entity called requestor, which is a
       special client-like type that participates in leasequery protocol <xref
@@ -885,12 +885,19 @@
       participate, it is useful to have a very short section stating that it
       must not send a given option and must ignore it when received.</t>
 
+      <t>Similar section for requestor is not required, unless the new option
+      has anything to do with requestor (or it is likely that the reader may
+      think that is has). It should be noted that while in majority of
+      deployments, requestor is colocated with relay agent, those are two
+      separate entities from the protocol perspective and they may be used
+      separately. There are stand-alone requestor implementations available.</t>
+
       <t>The following sections include proposed text for such sections. That
       text is not required to appear, but it is appropriate in most
       cases. Additional or modified text specific to a given option is often
       required.</t>
 
-      <t>Although requestor is an uncommon functionality, its existence should
+      <t>Although requestor is somewhat uncommon functionality, its existence should
       be noted, especially when allowing or disallowing options to appear in
       certain message or being sent be certain entities. Additional message
       types may appear in the future, besides types defined in <xref
@@ -960,7 +967,7 @@
 
     </section>
 
-    <section title="Updating existing RFCs">
+    <section title="Should the new document update existing RFCs?">
       <t>Authors often ask themselves a question whether their proposal updates
       exist RFCs, especially 3315. During time of writing this document there
       were 79 options defined. Had all documents that defined them also updated
