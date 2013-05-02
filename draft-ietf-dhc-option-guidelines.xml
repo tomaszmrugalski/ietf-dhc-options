@@ -447,7 +447,7 @@
         better matching carried data types.</t>
 
         <figure align="center" anchor="option-with-variable-length-data-format"
-                title="Option with variale length data">
+                title="Option with variable length data">
           <artwork><![CDATA[ 0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -685,20 +685,16 @@
       deployment unnecessarily complex and should be avoided.</t>
     </section>
 
-    <section title="Is DHCPv6 dynamic?">
-      <t>DHCPv6 stands for Dynamic Host Configuration Protocol for
-      IPv6. Contrary to its name, in many contexts it is not
-      dynamic. While designing DHCPv6 options, it is worth noting that
-      there is no reliable way to instantly notify clients that
-      something has happened, e.g. parameter value has changed. There
-      is a RECONFIGURE mechanism, but it has several serious drawbacks
-      that makes its use difficult. First, its support is optional and
-      many client implementations do not support it. To use
-      reconfigure mechanism, server must use its secret nonce. That
-      means that provisioning server is the only one that can initiate
-      reconfiguration. Other servers do not know it and cannot trigger
-      reconfiguration. Therefore the only reliable way for clients to
-      refresh their configuration is to wait until T1 expires.</t>
+    <section title="Configuration changes occur at fixed times">
+      <t>In general, DHCPv6 clients only refresh configuration data
+      from the DHCP server when the T1 timer expires. Although there
+      is a RECONFIGURE mechanism that allows a DHCP server to request
+      that clients initiate reconfiguration, support for this mechanism
+      is optional and cannot be relied upon.</t>
+      <t>In light of the above, when designing an option you should
+      take into consideration the fact that your option may hold stale
+      data that will only be updated at an arbitrary time in the
+      future</t>
     </section>
 
     <section title="Multiple provisioning domains">
