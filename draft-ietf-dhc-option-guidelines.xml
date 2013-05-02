@@ -183,7 +183,7 @@
         to which the client is currently attached.  Someone runs not only
         the local switching network infrastructure that the client is
         directly (or wirelessly) attached to, but the various methods of
-        accessing the external Internet via local assist services that
+        accessing the external Internet via local assist services that the
         network must also provide (such as domain name servers, or routers).
         This means that in addition to the existence of a configuration
         parameter, one must also ask themselves if it is reasonable for
@@ -194,8 +194,8 @@
       values received via DHCPv6 (for example, due to having a value
       manually configured by its own operator). Bear in mind that
       doing so might cause the client to be rejected network
-      attachment privileges, and this is one main reason for the use
-      of DHCPv6 in corporate enterprises. </t>
+      attachment privileges, and this is one of the main reasons for the
+      use of DHCPv6 in corporate enterprises. </t>
     </section>
 
     <section title="General Principles">
@@ -232,7 +232,7 @@
       values at the start of the option, and any variable/indeterminate sized
       value at the tail end of the option.</t>
 
-      <t>This estimates that implementations will be able to reuse code paths
+      <t>This means that implementations will likely be able to reuse code paths
       designed to support the other options.</t>
 
       <t>There is a tradeoff between the adoptability of previously defined
@@ -244,8 +244,7 @@
       options already allocated, and consider which of those solve a similar
       problem. So, the following list of common option format fragments is
       provided as a shorthand. Please note that it is not complete in terms of
-      exampling every option format ever devised. It is only a list of option
-      format fragments which are used in two or more options.</t>
+      exampling every option format ever devised.</t>
 
       <section title="Option with IPv6 addresses">
         <t>This option format is used to carry one or many IPv6
@@ -274,7 +273,7 @@
         </figure>
         <t>Examples of use:
           <list style="symbols">
-            <t><xref target="RFC3315">DHCPv6 server unicast address</xref></t>
+            <t><xref target="RFC3315">DHCPv6 server unicast address (a single address only)</xref></t>
             <t><xref target="RFC3319">SIP Servers IPv6 Address List</xref></t>
             <t><xref target="RFC3646">DNS Recursive Name Server</xref></t>
             <t><xref target="RFC3898">NIS Servers</xref></t>
@@ -318,8 +317,8 @@
       </section>
 
       <section title="Option with IPv6 prefix">
-        <t>Sometimes there is a need to convey IPv6 prefix. The information to
-        be carried by an option includes the 128-bit IPv6 prefix together with a
+        <t>Sometimes there is a need to convey an IPv6 prefix. The information to
+        be carried by such an option includes the 128-bit IPv6 prefix together with a
         length of this prefix taking values from 0 to 128. Using the simplest
         approach, the option could convey this data in two fixed length fields:
         one carrying prefix length, another carrying the prefix. However,
@@ -353,7 +352,7 @@
         <t>ipv6-prefix field is a variable length field that specifies the
         IPv6 prefix. This field is padded with zeros up to the nearest octet
         boundary when prefix6-len is not divisible by 8. This can be
-        expressed using the following equation: &lt;prefix6-len&gt;+7/8</t>
+        expressed using the following equation: (&lt;prefix6-len&gt;+7)/8</t>
 
         <t>Examples of use:
           <list style="symbols">
@@ -362,13 +361,12 @@
         </t>
 
         <t>For example, the prefix 2001:db8::/60 would be encoded with an
-        option-length of 9, prefix-len would be set to 60, the ipv6-prefix would
-        be 8 octets and would contains octets 20 01 0d b8 00 00 00 00.</t>
+        option-length of 9, prefix6-len would be set to 60, the ipv6-prefix would
+        be 8 octets and would contain octets 20 01 0d b8 00 00 00 00.</t>
 
-        <t>It should be noted that Prefix Delegation mechanism used in <xref
-        target="RFC3633" /> uses constant length prefixes. The concern about
-        option length was not well understood at the time of its publication.
-        </t>
+        <t>It should be noted that the IAPREFIX option defined by <xref
+        target="RFC3633" /> uses a constant length prefix. The concern about
+        option length was not well understood at the time of its publication.</t>
       </section>
 
       <section title="Option with 32-bit integer value">
@@ -435,12 +433,15 @@
 
       </section>
 
-      <section title="Option with variable length data">
+      <section title="Option with variable length data"
+               anchor="option-with-variable-length-data">
         <t>This option can be used to carry variable length data of
         any kind. Internal representation of carried data is option
         specific. Some of the existing DHCPv6 options use NVT-ASCII
         strings to encode: filenames, host or domain names, protocol
-        features or textual messages such as verbose error indicators.</t>
+        features or textual messages such as verbose error indicators.
+        Whenever this format is used by the new option being defined,
+        the data encoding should be documented.</t>
         <t>This option format provides a lot of flexibility to pass
         data of almost any kind. Though, whenever possible it is highly
         recommended to use more specialized options, with field types
@@ -471,7 +472,12 @@
 
       <section title="Option with DNS Wire Format Domain Name List">
         <t>This option is used to carry 'domain search' lists or any
-        host or domain name:</t>
+        host or domain name. It uses the same format as desribed in
+        <xref target="option-with-variable-length-data"/>, but
+        with the special data enconding, described in section 8 of
+        <xref target="RFC3315"/>. This data enconding supports carrying
+        multiple instances of host or domain name in a single option
+        by terminating each instance with the byte value of 0.</t>
         <figure align="center" anchor="option-with-dns-domain-name-list-format"
                 title="Option with DNS Wire Format Domain Name List">
           <artwork><![CDATA[ 0                   1                   2                   3
