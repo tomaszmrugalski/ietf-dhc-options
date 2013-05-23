@@ -24,6 +24,7 @@
 <!ENTITY rfc6334 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6334.xml">
 <!ENTITY rfc6603 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6603.xml">
 <!ENTITY rfc6610 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6610.xml">
+<!ENTITY rfc6644 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6644.xml">
 ]>
 <rfc category="std" docName="draft-ietf-dhc-option-guidelines-11"
      updates="3315" ipr="trust200902">
@@ -1008,10 +1009,10 @@
       difficult. It should be noted that "extends" and "updates" are two very
       different verbs. If a new draft defines a new option that clients request
       and servers provide, it merely extends current standards, so "updates
-      3315" is not required in the new document header. On the other hand, if
-      the new draft changes something in already defined behavior, e.g. servers
-      must discard incoming messages if option foo is invalid or missing, then
-      the "updates" phrase is warranted.</t>
+      3315" is not required in the new document header. On the other hand, if a
+      new document replaces or modifies existing behavior, it should be noted that
+      it updates the other document. For example, <xref target="RFC6644"/> clearly
+      updates <xref target="RFC3315"/> as it replaces existing with new text.</t>
     </section>
 
     <section title="Security Considerations">
@@ -1098,6 +1099,7 @@
       &rfc6334;
       &rfc6603;
       &rfc6610;
+      &rfc6644;
       <?rfc include='reference.I-D.ietf-dhc-secure-dhcpv6'?>
       <?rfc include='reference.I-D.ietf-softwire-map-dhcp'?>
       <?rfc include='reference.I-D.ietf-softwire-4rd'?>
