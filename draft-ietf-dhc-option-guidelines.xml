@@ -476,7 +476,7 @@
         <xref target="option-with-variable-length-data"/>, but
         with the special data enconding, described in section 8 of
         <xref target="RFC3315"/>. This data enconding supports carrying
-        multiple instances of host or domain name in a single option
+        multiple instances of hosts or domain names in a single option,
         by terminating each instance with the byte value of 0.</t>
         <figure align="center" anchor="option-with-dns-domain-name-list-format"
                 title="Option with DNS Wire Format Domain Name List">
@@ -511,15 +511,21 @@
       <t>Placing an octet at the start of the option which informs the software
       how to process the remaining octets of the option may appear simple to
       the casual observer. But the only conditional formatting methods that
-      are in widespread use today are 'protocol' class options. Therefore the
-      conditional formatting requires new code to be written, as well as
-      introduces an implementation problem; as it requires that all speakers
-      implement all current and future conditional formats.</t>
+      are in widespread use today are 'protocol' class options. Therefore
+      conditional formatting requires new code to be written and complicates
+      future interoperability should new conditional formats be added; and
+      existing code has to ignore conditional format that it does not support.</t>
+
+<!--
+     Bernie suggests that this paragraph is removed from the draft because
+     people will be tempted to experiment with conditional option formats
+     and then promote them as official options.
 
       <t>Conditional formatting is not recommended, except in cases
       where the DHCPv6 option has already been deployed
       experimentally, and all but one conditional format is
       deprecated.</t>
+-->
     </section>
 
     <section anchor="aliasing" title="Avoid Aliasing">
@@ -537,7 +543,7 @@
       clients cannot predict what values the server will provide, they
       must request all formats. So in the case where the server is
       configured with all formats, DHCPv6 message bandwidth is wasted on
-      option contents that are redundant. Also, the DHCPv6 option space is 
+      option contents that are redundant. Also, the DHCPv6 option space is
       wasted, as three new option codes are required, rather than one.</t>
 
       <t>It also becomes unclear which types of values are mandatory, and how
@@ -559,9 +565,9 @@
 
     <section title="Choosing between FQDN and address">
       <t>Some parameters may be specified as FQDN or an address. It is not
-      allowed to define both option types at the same time (see section 
+      allowed to define both option types at the same time (see section
       <xref target="aliasing"/>), so one of them must be chosen. This
-      section is intended as a help to make an informed decision in that
+      section is intended to help make an informed decision in that
       regard.</t>
 
       <t>On the specific subject of desiring to configure a value using a FQDN
@@ -576,7 +582,7 @@
       consider in making a decision on format.</t>
 
       <t>Unless there are specific reasons to do otherwise, address should
-      be used. It is simpler to use, its validation is trivial (length 
+      be used. It is simpler to use, its validation is trivial (length
       of 16 constitutes a valid option), is explicit and does not allow
       any ambiguity. It is faster (does not require extra resolution efforts),
       so it is more efficient, which can be especially important for
@@ -591,7 +597,7 @@
       option should really convey an address, not FQDN. The only real incentive
       to use FQDN is case d). It is the only case that allows possible changes
       in the DNS to be picked up by clients.</t>
-      <t>FQDN imposes number of additional failure modes and issues that
+      <t>FQDN imposes a number of additional failure modes and issues that
       should be dealt with:
       <list style="numbers">
 	<t>The client must have a knowledge about available DNS servers. That
@@ -635,15 +641,15 @@
       Agent Information option. There is no such ambiguity in
       DHCPv6 (with the unfortunate exception of <xref target="RFC5908"/>).</t>
       <t>From the implementation perspective, it is easier to implement
-      encapsulated option rather than sub-option, as the implementor do
+      encapsulated option rather than sub-option, as the implementers do
       not have to deal with separate option spaces and can use the same
       buffer parser in several places throughout the code.</t>
-      <t>Such encapsulation mechanism is not limited to one level. There is at
+      <t>Such encapsulation is not limited to one level. There is at
       least one defined option that is encapsulated twice: Identity Association
       for Prefix Delegation (IA_PD, defined in <xref target="RFC3633"/>, section
       9) conveys IA Prefix (IAPREFIX, defined in <xref target="RFC3633"/>,
       section 10). Such delegated prefix may contain an excluded prefix range
-      that is represented by PD_EXCLUDE option that is conveyed as sub-option
+      that is represented by PD_EXCLUDE option that is conveyed as encapsulated
       inside IAPREFIX (PD_EXCLUDE, defined in <xref target="RFC6603"/>).  It
       seems awkward to refer to such options as sub-sub-option or doubly
       encapsulated option, therefore "encapsulated option" term is typically
@@ -665,30 +671,32 @@
     </section>
 
     <section title="Additional States Considered Harmful">
-      <t>DHCP is a protocol designed for provisioning nodes. Less
+      <t>DHCP is a protocol designed for provisioning clients. Less
       experienced protocol designers often assume that it is easy to
       define an option that will convey a different parameter for each
-      node in a network. Such problems arose during designs of MAP
+      client in a network. Such problems arose during designs of MAP
       <xref target="I-D.ietf-softwire-map-dhcp"/>
       and 4rd <xref target="I-D.ietf-softwire-4rd"/>. While it
-      would be easier for provisioned nodes to get ready to use per
-      node option values, such requirement puts exceedingly large
+      would be easier for provisioned clients to get ready to use per
+      client option values, such requirement puts exceedingly large
       loads on the server side. Alternatives should be considered,
       if possible. As an example, <xref
       target="I-D.ietf-softwire-map-dhcp"/> was designed in a
-      way that all nodes are provisioned with the same set of MAP
-      options and each provisioned node uses its unique address and
-      delegated prefix to generate node-specific information. Such
+      way that all clients are provisioned with the same set of MAP
+      options and each provisioned client uses its unique address and
+      delegated prefix to generate client-specific information. Such a
       solution does not introduce any additional state for the server
       and therefore scales better.</t>
       <t>It also should be noted that contrary to DHCPv4, DHCPv6 keeps
       several timers for renewals. Each IA_NA (addresses) and IA_PD
       (prefixes) contains T1 and T2 timers that designate time after
       which client will initiate renewal. Those timers apply only to
-      its own IA containers. For renewing other parameters, please use
-      Information Refresh Time Option (defined in <xref
-      target="RFC4242"/>). Introducing additional timers make
-      deployment unnecessarily complex and should be avoided.</t>
+      its own IA containers. Refreshing other parameters should be
+      initiated after a time specified in the Information Refresh Time
+      Option (defined in <xref target="RFC4242"/>), carried in the Reply
+      message and returned in response to Information-Request message.
+      Introducing additional timers make deployment unnecessarily
+      complex and SHOULD be avoided.</t>
     </section>
 
     <section title="Configuration changes occur at fixed times">
@@ -706,7 +714,7 @@
     <section title="Multiple provisioning domains">
       <t>In some cases there could be more than one DHCPv6 server on a
       link, with each provisioning a different set of parameters. One
-      notable example of such case is a home network with a connection
+      notable example of such a case is a home network with a connection
       to two independent ISPs.</t>
       <t>DHCPv6 was not initially designed with multiple provisioning
       domains. Although <xref target="RFC3315"/> states that a client
@@ -736,7 +744,7 @@
         of a similar format would need to have multiple or single values
         encoded (whatever differs from the current option), and how that
         might be accomplished in a similar format.</t>
-        
+
       <t>The matter of size considerations is further discussed in
       <xref target="fragmentation"/>.</t>
     </section>
@@ -794,7 +802,7 @@
 
     <section anchor="fragmentation" title="Option Size">
       <t><xref target="RFC3315">DHCPv6</xref> allows for packet sizes up to 64KB.
-      First, through its use of link-local addresses, it steps aside many of
+      First, through its use of link-local addresses, it avoids many of
       the deployment problems that plague DHCPv4, and is actually an UDP over
       IPv6 based protocol (compared to DHCPv4, which is mostly UDP over IPv4
       protocol, but with layer 2 hacks). Second, RFC 3315 explicitly refers
@@ -806,10 +814,10 @@
       divides those too big from the workable.</t>
 
       <t>It is advantageous to prefer option formats which contain the desired
-      information in the smallest form factor that satisfies the requirements. A
-      common sense still applies here. It is better to split distinct values
-      into separate octects rather than propose overly complex bit shifting
-      operations to save up several bits (or even an octet or two) that would be
+      information in the smallest form factor that satisfies the requirements.
+      Common sense still applies here. It is better to split distinct values
+      into separate octets rather than propose overly complex bit shifting
+      operations to save several bits (or even an octet or two) that would be
       padded to the next octet boundary anyway.</t>
 
       <t>DHCPv6 does allow for multiple instances of a given option,
@@ -819,7 +827,7 @@
       of options). In such cases, it is better to define an option as
       an array if it is possible. It is recommended to clarify (with
       normative language) whether a given DHCPv6 option may appear
-      once or multiple times.</t>
+      once or multiple times. The default assumption is only once.</t>
     </section>
 
     <section title="Clients Request their Options">
@@ -856,10 +864,10 @@
       place the foo option code on the Option Request Option list, clients MAY
       include option foo in their packets as hints for the server as values the
       desire, and servers MUST include option foo when the client requested it
-      (and the server has been so configured)". Such a text is discouraged as
+      (and the server has been so configured)". Such text is discouraged as
       there are several issues with it. First, it assumes that client
       implementation that supports a given option will always want to use
-      it. This is not true. The second and more important reason is that such a
+      it. This is not true. The second and more important reason is that such
       text essentially duplicates mechanism already defined in <xref
       target="RFC3315"/>. It is better to simply refer to existing mechanism
       rather than define it again. See <xref target="templates"/> for proposed
@@ -901,17 +909,18 @@
 
     <section anchor="templates" title="Recommended sections in the new document">
       <t>There are three major entities in DHCPv6 protocol: server, relay agent,
-      and client. There is also a separate entity called requestor, which is a
-      special client-like type that participates in leasequery protocol <xref
-      target="RFC5007"/> and <xref target="RFC5460"/>. It is very helpful for
-      implementors to include separate sections that describe operation for
-      those three major components. Even when a given entity does not
+      and client. It is very helpful for
+      implementers to include separate sections that describe operation for
+      those three major entities. Even when a given entity does not
       participate, it is useful to have a very short section stating that it
       must not send a given option and must ignore it when received.</t>
 
-      <t>Similar section for requestor is not required, unless the new option
+      <t>There is also a separate entity called requestor, which is a
+      special client-like type that participates in leasequery protocol <xref
+      target="RFC5007"/> and <xref target="RFC5460"/>. A similar section for
+      the requestor is not required, unless the new option
       has anything to do with requestor (or it is likely that the reader may
-      think that is has). It should be noted that while in majority of
+      think that is has). It should be noted that while in the majority of
       deployments, requestor is colocated with relay agent, those are two
       separate entities from the protocol perspective and they may be used
       separately. There are stand-alone requestor implementations available.</t>
@@ -923,15 +932,15 @@
 
       <t>Although requestor is somewhat uncommon functionality, its existence should
       be noted, especially when allowing or disallowing options to appear in
-      certain message or being sent be certain entities. Additional message
+      certain message or being sent by certain entities. Additional message
       types may appear in the future, besides types defined in <xref
       target="RFC3315"/>. Therefore authors are encouraged to familiarize
       themselves with a list of currently defined DHCPv6 messages available on
       IANA website <xref target="iana"/>.</t>
 
-      <t>Typically new options are requested by clients and assigned by server,
+      <t>Typically new options are requested by clients and assigned by the server,
       so there is no specific relay behavior. Nevertheless it is good to include
-      a section for relay agent behaviour and simply state that there are no
+      a section for relay agent behavior and simply state that there are no
       additional requirements for relays. The same applies for client behavior
       if the options are to be exchanged between relay and server.</t>
 
@@ -940,9 +949,9 @@
       must be exactly 16 bytes long, but sometimes the rules are more complex.
       It is recommeded to refer to existing documents (e.g. section 8 of RFC3315
       for domain name enconding) rather than trying to repeat such rules.</t>
-      
-      <section anchor="template-client" title="DHCPv6 Client Behavior">
-	<t>Client MAY request option foo, as defined in <xref
+
+      <section anchor="template-client" title="DHCPv6 Client Behavior Text">
+	<t>Clients MAY request option foo, as defined in <xref
 	target="RFC3315"/>, sections 17.1.1, 18.1.1, 18.1.3, 18.1.4, 18.1.5 and
 	22.7. As a convenience to the reader, we mention here that the client
 	includes requested option codes in Option Request Option.</t>
@@ -952,13 +961,13 @@
 	INFORMATION-REQUEST messages as a hint for the server regarding
 	preferred option values.</t>
 
-	<t>Optional text (if the option contains FQDN): If the client request an
-	option that conveys FQDN, it is expected that content of that option
+	<t>Optional text (if the option contains FQDN): If the client requests an
+	option that conveys an FQDN, it is expected that the contents of that option
 	will be resolved using DNS. Hence the following text may be useful:
 	Client that requests option foo SHOULD also request option
 	OPTION_DNS_SERVERS specified in <xref target="RFC3646"/>.</t>
-	
-	<t>Client MUST discard option foo if it is invalid (i.e. did not pass
+
+	<t>Clients MUST discard option foo if it is invalid (i.e. did not pass
 	validation steps defined in Section X.Y).</t>
 
 	<t>Optional text (if option foo in expected to be exchanged between
@@ -967,19 +976,19 @@
 	foo. Clients MUST ignore received option foo.</t>
       </section>
 
-      <section anchor="template-server" title="DHCPv6 Server Behavior">
+      <section anchor="template-server" title="DHCPv6 Server Behavior Text">
 	<t>Sections 17.2.2 and 18.2 of <xref target="RFC3315"/> govern server
 	operation in regards of option assignment. As a convenience to the
 	reader, we mention here that the server will send option foo only if
 	configured with specific values for foo and client requested it.</t>
-	<t>Optional text: Server MUST NOT send more than one instance of
+	<t>Optional text: Servers MUST NOT send more than one instance of
 	foo option.</t>
 
 	<t>Optional text (if server is never supposed to receive option foo):
-	Server MUST ignore incoming foo option.</t>
+	Servers MUST ignore incoming foo option.</t>
       </section>
 
-      <section anchor="template-relay" title="DHCPv6 Relay Agent Behavior">
+      <section anchor="template-relay" title="DHCPv6 Relay Agent Behavior Text">
 	<t>Optional text (if foo option is exchanged between clients and server
 	or between requestors and servers): There are no additional requirements for
 	relays.</t>
@@ -993,8 +1002,8 @@
 
     <section title="Should the new document update existing RFCs?">
       <t>Authors often ask themselves a question whether their proposal updates
-      exist RFCs, especially 3315. During time of writing this document there
-      were 79 options defined. Had all documents that defined them also updated
+      exist RFCs, especially 3315. In April 2013 there were
+      about 80 options defined. Had all documents that defined them also updated
       RFC3315, its comprehension of such a document would be extremely
       difficult. It should be noted that "extends" and "updates" are two very
       different verbs. If a new draft defines a new option that clients request
@@ -1008,14 +1017,14 @@
     <section title="Security Considerations">
       <t>DHCPv6 does have an Authentication mechanism (<xref
       target="RFC3315"></xref>) that makes it possible for DHCPv6
-      software to discriminate between authentic endpoints and men in
-      the middle. Other authentication mechanisms may optionally be
+      software to discriminate between authentic endpoints and man-in-the-middle.
+      Other authentication mechanisms may optionally be
       deployed. For example, the Secure DHCPv6 <xref
       target="I-D.ietf-dhc-secure-dhcpv6"></xref>, based on
       Cryptographically Generated Addresses (CGA) <xref
       target="RFC3972"></xref>, can provide source address ownership
       validation, message origin authentication and message integrity
-      without requiring symmetric key pairs or supporting from any key
+      without requiring symmetric key pairs or support from any key
       management system. However, as of now, the mechanism is not
       widely deployed. It also does not provide end-to-end
       encryption.</t>
@@ -1046,7 +1055,7 @@
 
       <t>For some option contents, out of bound values may be used to breach
         security.  An IP address field might be made to carry a loopback
-        address, or local broadcast address, and depending on the protocol
+        address, or local multicast address, and depending on the protocol
         this may lead to undesirable results.  A domain name field may
         be filled with contrived contents that exceed the limitations
         placed upon domain name formatting - as this value is possibly
