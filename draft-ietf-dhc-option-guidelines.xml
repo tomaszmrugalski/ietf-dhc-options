@@ -535,7 +535,7 @@
         </figure>
 
       <t>The uri-len is two octets long and specifies the length of
-      the uri data in network byte order.</t>
+      the uri data.</t>
      
       </section>
 
@@ -592,13 +592,13 @@
         <figure>
           <artwork><![CDATA[
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-...-+-+-+-+-+-+-+
-|       text-len                |        String                  |
+|       text-len                |        String                 |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-...-+-+-+-+-+-+-+
 ]]></artwork>
         </figure>
         
       <t>The text-len is two octets long and specifies the length of
-      the string in network byte order.</t>
+      the string.</t>
 
       </section>
 
