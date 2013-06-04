@@ -190,10 +190,10 @@
 
       <t>So although a given solution would work, and might even be space,
       time, or aesthetically optimal, a given option is presented with a
-      series of ever-worsening challenges to be adopted; <list style="symbols">
+      series of ever-worsening challenges to be adopted: <list style="symbols">
           <t>If it doesn't fit neatly into existing config files.</t>
 
-          <t>If it requries new source code changes to be adopted, and hence
+          <t>If it requires source code changes to be adopted, and hence
           upgrades of deployed software.</t>
 
           <t>If it does not share its deployment fate in a general manner with
@@ -203,7 +203,7 @@
           <t>If the option would work well in the particular deployment
           environment the proponents currently envision, but has equally valid
           uses in some other environment where the proposed option format
-          would fail or produce inconsistent results.</t>
+          would fail or would produce inconsistent results.</t>
         </list></t>
 
       <t>There are many things DHCPv6 option creators can do to avoid the
@@ -273,7 +273,7 @@
 
       <t>There is a tradeoff between the adoptability of previously defined
       option formats, and the advantages that new or specialized formats can
-      provide. In general, it is usually preferrable to reuse previously used
+      provide. In general, it is usually preferable to reuse previously used
       option formats.</t>
 
       <t>However, it isn't very practical to consider the bulk of DHCPv6
@@ -341,7 +341,7 @@
         without any content. It is the presence or absence of the option that
         conveys the value. This approach has the additional benefit of absent
         option designating the default, i.e. administrator has to take
-        explicit actions to deploy the oposite of the default value.</t>
+        explicit actions to deploy the opposite of the default value.</t>
 
         <figure align="center" anchor="option-with-boolean-format"
                 title="Option for conveying boolean">
@@ -388,14 +388,15 @@
 ]]></artwork>
           </figure></t>
 
-        <t>option-length is set to 1 + length of the IPv6 prefix. prefix6-len
-        is one octet long and specifies the length in bits of the IPv6 prefix.
+        <t>option-length is set to 1 + length of the IPv6 prefix.</t>
+        
+        <t>prefix6-len is one octet long and specifies the length in bits of the IPv6 prefix.
         Typically allowed values are 0 to 128.</t>
 
         <t>ipv6-prefix field is a variable length field that specifies the
-        IPv6 prefix. This field is padded with zeros up to the nearest octet
-        boundary when prefix6-len is not divisible by 8. This can be expressed
-        using the following equation: (prefix6-len + 7) / 8</t>
+        IPv6 prefix. The length is (prefix6-len + 7) / 8. This field is padded
+        with zero bits up to the nearest octet boundary when prefix6-len is
+        not divisible by 8.</t>
 
         <t>Examples of use: <list style="symbols">
             <t><xref target="I-D.ietf-softwire-map-dhcp">Default Mapping
@@ -408,7 +409,7 @@
         00.</t>
 
         <t>It should be noted that the IAPREFIX option defined by <xref
-        target="RFC3633"></xref> uses a constant length prefix. The concern
+        target="RFC3633"></xref> uses a full length 16-octet prefix field. The concern
         about option length was not well understood at the time of its
         publication.</t>
       </section>
@@ -482,7 +483,7 @@
         the subset of URIs that, in addition to identifying a resource,
         provide a means of locating the resource by describing its primary
         access mechanism (e.g., its network "location"). This option format
-        can be used to carry URIs:</t>
+        can be used to carry a single URI:</t>
 
         <figure align="center" anchor="option-with-URI"
                 title="Option with URI">
@@ -502,14 +503,51 @@
         <t>Examples of use: <list style="symbols">
             <t><xref target="RFC5970">Boot File URL</xref></t>
           </list></t>
+
+      <t>An alternate encoding to support multiple URIs is available. An
+      option must be defined to use either the single URI format above or
+      the multiple URL format below depending on whether a single is always
+      sufficient or if multiple URLs are possible.
+      </t>
+
+        <figure align="center" anchor="option-with-multiple-URIs"
+                title="Option with multiple URIs">
+          <artwork><![CDATA[ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|          option-code          |          option-len           |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+.                                                               .
+.                            uri-data                           .
+.                             . . .                             .
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork>
+        </figure>
+
+      <t>Each instance of the uri-data is formatted as follows:</t>
+
+        <figure>
+           <artwork><![CDATA[
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-...-+-+-+-+-+-+-+
+|       uri-len                 |          URI                  |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-...-+-+-+-+-+-+-+
+]]></artwork>
+        </figure>
+
+      <t>The uri-len is two octets long and specifies the length of
+      the uri data in network byte order.</t>
+     
       </section>
 
       <section title="Option with Text String">
         <t>A text string is a sequence of characters that have no semantics.
+        The encoding (such as 7-bit ASCII, NVT-ASCII, UTF-8) of the text
+        string MUST be specified.
         If a data format has semantics other than just being text, it is not a
         string. E.g., a FQDN is not a string, and a URI is also not a string,
-        because they have different semantics. This option format can be used
-        to carry text string:</t>
+        because they have different semantics. A string must not enclude any
+        terminator (such as a null byte). This option format can be used
+        to carry a text string:</t>
 
         <figure align="center" anchor="option-with-text-string"
                 title="Option with text string">
@@ -528,15 +566,47 @@
         <t>Examples of use: <list style="symbols">
             <t><xref target="RFC4833">Timezone Options for DHCPv6 </xref></t>
           </list></t>
+
+      <t>An alternate encoding to support multiple text strings is available. An
+      option must be defined to use either the single text string format above or
+      the multiple text string  format below depending on whether a single is always
+      sufficient or if multiple text strings are possible.
+      </t>
+
+        <figure align="center" anchor="option-with-multiple-text-strings"
+                title="Option with multiple text strings">
+          <artwork><![CDATA[ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|          option-code          |          option-len           |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+.                                                               .
+.                           text-data                           .
+.                             . . .                             .
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork>
+        </figure>
+
+      <t>Each instance of the text-data is formatted as follows:</t>
+
+        <figure>
+          <artwork><![CDATA[
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-...-+-+-+-+-+-+-+
+|       text-len                |        String                  |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-...-+-+-+-+-+-+-+
+]]></artwork>
+        </figure>
+        
+      <t>The text-len is two octets long and specifies the length of
+      the string in network byte order.</t>
+
       </section>
 
       <section anchor="option-with-variable-length-data"
                title="Option with variable length data">
         <t>This option can be used to carry variable length data of any kind.
-        Internal representation of carried data is option specific. Some of
-        the existing DHCPv6 options use NVT-ASCII strings to encode:
-        filenames, host or domain names, protocol features or textual messages
-        such as verbose error indicators. Whenever this format is used by the
+        Internal representation of carried data is option specific.
+        Whenever this format is used by the
         new option being defined, the data encoding should be documented.</t>
 
         <t>This option format provides a lot of flexibility to pass data of
@@ -568,10 +638,10 @@
 
       <section title="Option with DNS Wire Format Domain Name List">
         <t>This option is used to carry 'domain search' lists or any host or
-        domain name. It uses the same format as desribed in <xref
+        domain name. It uses the same format as described in <xref
         target="option-with-variable-length-data"></xref>, but with the
-        special data enconding, described in section 8 of <xref
-        target="RFC3315"></xref>. This data enconding supports carrying
+        special data encoding, described in section 8 of <xref
+        target="RFC3315"></xref>. This data encoding supports carrying
         multiple instances of hosts or domain names in a single option, by
         terminating each instance with the byte value of 0.</t>
 
@@ -689,12 +759,12 @@
       it is more efficient, which can be especially important for energy
       restricted devices.</t>
 
-      <t>FQDN options is discouraged for options intended to configure hosts,
-      because hosts may have multiple provisioning domains <xref
-      target="multpleProDomain"></xref>, and may get a different answer from
+      <t>FQDN options are discouraged for options intended to configure hosts,
+      because hosts may have multiple provisioning domains (see <xref
+      target="multpleProDomain"></xref>), and may get a different answer from
       the DNS depending on the provisioning domain. This is particularly a
       problem when the normal expected use of the option makes sense with
-      private DNS zone, as might be the case with a corporate VPN.</t>
+      private DNS zone(s), as might be the case with a corporate VPN.</t>
 
       <t>FQDN does require a resolution into an actual address. This implies
       the question when the FQDN resolution should be taken. There are a
@@ -726,7 +796,7 @@
           if the first fails for whatever reason, etc.);</t>
 
           <t>Multi-homed devices may be connected to different administrative
-          domains with each domain providing a different information in DNS
+          domains with each domain providing different information in DNS
           (e.g. an enterprise network exposing private domains). Client may
           send DNS queries to a different DNS server;</t>
 
@@ -742,8 +812,8 @@
       referred to as top-level options. Many options may include other
       options. Such inner options are often referred to as encapsulated or
       nested options. Those options are sometimes called sub-options, but this
-      term actually means something else, and &gt; therefore should never be
-      used to describe nested options. It is recommened to use term
+      term actually means something else, and therefore should never be
+      used to describe encapsulated options. It is recommended to use term
       "encapsulated" as this terminology is used in <xref
       target="RFC3315"></xref>. The difference between encapsulated and
       sub-options are that the former uses normal DHCPv6 option space codes,
@@ -759,7 +829,7 @@
       definitions).</t>
 
       <t>From the implementation perspective, it is easier to implement
-      encapsulated option rather than sub-option, as the implementers do not
+      encapsulated options rather than sub-options, as the implementers do not
       have to deal with separate option spaces and can use the same buffer
       parser in several places throughout the code.</t>
 
@@ -776,16 +846,17 @@
       level.</t>
 
       <t>When defining configuration means for more complex mechanisms, it may
-      be tempting to simply use sub-options. That should usually be avoided,
+      be tempting to simply use sub-options. That should be avoided,
       as it increases complexity of the parser. It is much easier, faster and
-      less error prone to parse larger number of options on a single
+      less error prone to parse a larger number of options on a single
       (top-level) scope, than parse options on several scopes. The use of
-      sub-options should be avoided as much as possible but it is better to
+      sub-options should be avoided as much as possible, but it is better to
       use sub-options rather than conditional formatting.</t>
 
       <t>It should be noted that currently there is no clear way defined for
       requesting sub-options. Most known implementations are simply using
-      top-level ORO for requesting both top-level options and sub-options.</t>
+      top-level ORO for requesting both top-level options and encapsulated
+      options.</t>
     </section>
 
     <section title="Additional States Considered Harmful">
@@ -1005,9 +1076,9 @@
       option may appear once or multiple times. The default assumption is only
       once.</t>
 
-      <t>Relay agents have to do fragment reassembly and refragment on
+      <t>Relay agents have to do fragment reassembly and fragmentation on
       transmission. So while fragmentation is allowed, if a new option
-      requires significant fragmentation, it probably isn't a good choice for
+      results in significant fragmentation, it probably isn't a good choice for
       DHCP configuration; instead DHCP should simply point to a URI where the
       configuration information can be obtained.</t>
     </section>
@@ -1016,22 +1087,23 @@
       <t>Option order, either the order among many DHCPv6 options or the order
       of multiple instances of the same option, SHOULD NOT be signaificant and
       MUST NOT be assumed. An exception may be security relevant options,
-      which often created last and put at the last position, or whose location
+      which are often created last and put at the last position, or whose location
       indicates the protected range.</t>
 
-      <t>If the order of multiple instance of the same option, the definition
-      SHOULD restrict the order with in the specific option - have a list of
-      items rather than a single item.</t>
+      <t>As there is no explicit order for multiple instance of the same option,
+      an option definition SHOULD instead restrict the order within the option
+      by using a list of items rather than a single item.</t>
     </section>
 
     <section anchor="relayOptions" title="Relay Options">
-      <t>In DHCPv4, all relay options are oragized as sub-options within DHCP
+      <t>In DHCPv4, all relay options are organized as sub-options within DHCP
       Relay Agent Information Option<xref target="RFC3046"></xref>. And an
       independent number space called "DHCP Relay Agent Sub-options" is
-      maintained by IANA. Differnt from DHCPv4, in DHCPv6, Relay options are
+      maintained by IANA. Different from DHCPv4, in DHCPv6, Relay options are
       defined in the same way as client/server options, and they too use the
-      same number space as client/server options. The future-defined DHCPv6
-      Relay options SHOULD also use the same DHCPv6 Option Codes.</t>
+      same number space as client/server options. Future DHCPv6
+      Relay options MUST  be allocated from this single DHCPv6 Option code
+      space.</t>
 
       <t>However, the Relay-Supplied Options Option <xref
       target="RFC6422"></xref> may also contain some DHCPv6 options as
@@ -1065,7 +1137,7 @@
       the option when the client requested it (and the server has been so
       configured).</t> -->
 
-      <t>It is tempting to put a text that requires the client to include new
+      <t>It is tempting to add text that requires the client to include a new
       option in Option Request Option list, similar to this text: "Clients
       MUST place the foo option code on the Option Request Option list,
       clients MAY include option foo in their packets as hints for the server
@@ -1075,7 +1147,7 @@
       that client implementation that supports a given option will always want
       to use it. This is not true. The second and more important reason is
       that such text essentially duplicates mechanism already defined in <xref
-      target="RFC3315"></xref>. It is better to simply refer to existing
+      target="RFC3315"></xref>. It is better to simply refer to the existing
       mechanism rather than define it again. See <xref
       target="templates"></xref> for proposed examples on how to do that.</t>
 
@@ -1087,7 +1159,7 @@
       reply messages.</t>
 
       <t>It should also be noted that options values are never aligned within
-      the DHCP packet, even if the option code and option length may appear on
+      the DHCP packet, even the option code and option length may appear on
       odd byte boundaries.</t>
     </section>
 
@@ -1095,7 +1167,7 @@
       <t>Transition from IPv4 to IPv6 is progressing. Many transition
       technologies are proposed to speed it up. As a natural consequence there
       are also DHCP options proposed to provision those proposals. The
-      inevitable question is that whether the required parameters should be
+      inevitable question is whether the required parameters should be
       delivered over DHCPv4 or DHCPv6. Authors often don't give much thought
       about it and simply pick DHCPv6 without realizing the consequences. IPv6
       is expected to stay with us for many decades, and so is DHCPv6. There is
@@ -1106,8 +1178,8 @@
       provisioning of the transition technologies in DHCPv4, which will be
       obsoleted together with IPv4.</t>
 
-      <t>When the network infrastructure become IPv6-only, the support for
-      IPv4-only teminals may still needed. In this scenario, provisioning IPv4
+      <t>When the network infrastructure becomes IPv6-only, the support for
+      IPv4-only nodes may still be needed. In this scenario, provisioning IPv4
       configuration over IPv6-only networks <xref
       target="I-D.ietf-dhc-v4configuration"></xref> may be needed.</t>
     </section>
@@ -1127,7 +1199,7 @@
       section for the requestor is not required, unless the new option has
       anything to do with requestor (or it is likely that the reader may think
       that is has). It should be noted that while in the majority of
-      deployments, requestor is colocated with relay agent, those are two
+      deployments, requestor is co-located with relay agent, those are two
       separate entities from the protocol perspective and they may be used
       separately. There are stand-alone requestor implementations
       available.</t>
@@ -1152,11 +1224,11 @@
       client behavior if the options are to be exchanged between relay and
       server.</t>
 
-      <t>Section that contain option definition MUST include formal
+      <t>Sections that contain option definitions MUST include formal
       verification procedure. Often it is very simple, e.g. option that
       conveys IPv6 address must be exactly 16 bytes long, but sometimes the
       rules are more complex. It is recommeded to refer to existing documents
-      (e.g. section 8 of RFC3315 for domain name enconding) rather than trying
+      (e.g. section 8 of RFC3315 for domain name encoding) rather than trying
       to repeat such rules.</t>
 
       <section anchor="template-client" title="DHCPv6 Client Behavior Text">
@@ -1174,23 +1246,23 @@
         <t>Optional text (if the option contains FQDN): If the client requests
         an option that conveys an FQDN, it is expected that the contents of
         that option will be resolved using DNS. Hence the following text may
-        be useful: Client that requests option foo SHOULD also request option
+        be useful: Clients that request option foo SHOULD also request option
         OPTION_DNS_SERVERS specified in <xref target="RFC3646"></xref>.</t>
 
         <t>Clients MUST discard option foo if it is invalid (i.e. did not pass
         validation steps defined in Section X.Y).</t>
 
         <t>Optional text (if option foo in expected to be exchanged between
-        relays or request and server): Option foo is exchanged between relays
+        relays and servers): Option foo is exchanged between relays
         and servers only. Clients are not aware of the usage of option foo.
         Clients MUST ignore received option foo.</t>
       </section>
 
       <section anchor="template-server" title="DHCPv6 Server Behavior Text">
         <t>Sections 17.2.2 and 18.2 of <xref target="RFC3315"></xref> govern
-        server operation in regards of option assignment. As a convenience to
+        server operation in regards to option assignment. As a convenience to
         the reader, we mention here that the server will send option foo only
-        if configured with specific values for foo and client requested
+        if configured with specific values for foo and the client requested
         it.</t>
 
         <t>Optional text: Servers MUST NOT send more than one instance of foo
@@ -1204,15 +1276,15 @@
                title="DHCPv6 Relay Agent Behavior Text">
         <t>It's never appropriate for a relay agent to add options to a
         message heading toward the client, and relay agents don't actually
-        make relay-reply messages anyway.</t>
+        construct Relay-Reply messages anyway.</t>
 
         <t>Optional text (if foo option is exchanged between clients and
         server or between requestors and servers): There are no additional
         requirements for relays.</t>
 
         <t>Optional text (if relays are expected to insert or consume option
-        foo): Relay agents MAY include option foo when forwarding packets from
-        clients to the server.</t>
+        foo): Relay agents MAY include option foo in a Relay-Forw when
+        forwarding packets from clients to the servers.</t>
       </section>
     </section>
 
@@ -1220,7 +1292,7 @@
       <t>Authors often ask themselves a question whether their proposal
       updates exist RFCs, especially 3315. In April 2013 there were about 80
       options defined. Had all documents that defined them also updated
-      RFC3315, its comprehension of such a document would be extremely
+      RFC3315, comprehension of such a document set would be extremely
       difficult. It should be noted that "extends" and "updates" are two very
       different verbs. If a new draft defines a new option that clients
       request and servers provide, it merely extends current standards, so
@@ -1272,7 +1344,7 @@
       <t>Authors of drafts defining new DHCP options are therefore strongly
       advised to explicitly define validation measures that recipients of such
       options are required to do before processing such options. However,
-      validation measures are already defined by RFC3315 or other
+      validation measures already defined by RFC3315 or other
       specifications referenced by the new option document are redundant, and
       can introduce errors, so authors are equally strongly advised to refer
       to the base specification for any such validation language rather than
