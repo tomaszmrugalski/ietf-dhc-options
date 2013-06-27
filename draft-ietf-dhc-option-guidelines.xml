@@ -1083,9 +1083,49 @@
       configuration information can be obtained.</t>
     </section>
 
+    <section anchor="singleton" title="Singleton options">
+      <t>Although <xref target="RFC3315"/> states that each option
+      type MAY appear more than once, the original idea was that
+      multiple instances are reserved for stateful options, like IA_NA
+      or IA_PD. For most other options it is usually expected that
+      they will appear at most once. Such options are called singleton
+      options.  Sadly, it is often not clearly specified in RFCs that
+      were published up to this date whether only one or more option
+      instances are allowed. Documents that define new defined options
+      SHOULD state whether new options are singletons or not.</t>
+
+      <t>Discussion: perhaps we could add the following text: Unless
+      otherwise specified, new defined options are singletons.</t>
+
+      <t>When deciding whether a single or multiple option instances
+      are allowed in a message, take into consideration how the
+      content of the option will be used. Depending on the service
+      being configured it may or may not make sense to have multiple
+      values configured. If multiple values make sense, it is better
+      to explicitly allow that by using option format that allows
+      multiple values within one option instance.</t>
+
+      <t>Allowing multiple option instances often leads to confusion.
+      Consider the following example. Basic DS-Lite architecture
+      assumes that the B4 element (DHCPv6 client) will receive AFTR
+      option and establish a single tunnel to configured tunnel
+      termination point (AFTR). During standardization process of
+      <xref target="RFC6334"/> there was a discussion whether multiple
+      instances of DS-Lite tunnel option should be allowed.  This
+      created an unfounded expectation that the clients receiving
+      multiple instances of the option will somehow know when one
+      tunnel endpoint goes off-line and do some sort of failover
+      between other values provided in other instances of the AFTR
+      option. Others assumed that if there are multiple options, the
+      client will somehow do a load balancing between provided tunnel
+      endpoints. Neither failover nor load balacing was defined for
+      DS-Lite architecture, so it caused confusion. It was eventually
+      decided to allow only one instance of the AFTR option.</t>
+    </section>
+
     <section anchor="optionOrder" title="Option Order">
       <t>Option order, either the order among many DHCPv6 options or the order
-      of multiple instances of the same option, SHOULD NOT be signaificant and
+      of multiple instances of the same option, SHOULD NOT be significant and
       MUST NOT be assumed. An exception may be security relevant options,
       which are often created last and put at the last position, or whose location
       indicates the protected range.</t>
@@ -1265,8 +1305,8 @@
         if configured with specific values for foo and the client requested
         it.</t>
 
-        <t>Optional text: Servers MUST NOT send more than one instance of foo
-        option.</t>
+        <t>Optional text: Option foo is a singleton. Servers MUST NOT
+        send more than one instance of foo option.</t>
 
         <t>Optional text (if server is never supposed to receive option foo):
         Servers MUST ignore incoming foo option.</t>
