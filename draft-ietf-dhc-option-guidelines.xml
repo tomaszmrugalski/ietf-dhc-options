@@ -1118,7 +1118,7 @@
       between other values provided in other instances of the AFTR
       option. Others assumed that if there are multiple options, the
       client will somehow do a load balancing between provided tunnel
-      endpoints. Neither failover nor load balacing was defined for
+      endpoints. Neither failover nor load balancing was defined for
       DS-Lite architecture, so it caused confusion. It was eventually
       decided to allow only one instance of the AFTR option.</t>
     </section>
