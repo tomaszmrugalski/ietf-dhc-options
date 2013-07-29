@@ -29,7 +29,7 @@
 <!ENTITY rfc6610 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6610.xml">
 <!ENTITY rfc6644 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6644.xml">
 ]>
-<rfc category="bcp" docName="draft-ietf-dhc-option-guidelines-12"
+<rfc category="bcp" docName="draft-ietf-dhc-option-guidelines-13"
      ipr="trust200902" updates="3315">
   <front>
     <title abbrev="DHCPv6 Option Guidelines">Guidelines for Creating New
@@ -259,7 +259,7 @@
       benefits to doing so.</t>
     </section>
 
-    <section title="Reusing Other Options">
+    <section title="Reusing Other Options Formats">
       <t>The easiest approach to manufacturing trivially deployable DHCPv6
       Options is to assemble the option out of whatever common fragments fit -
       possibly allowing a group of data elements to repeat to fill the
@@ -280,6 +280,17 @@
       problem. So, the following list of common option format data elements is
       provided as a shorthand. Please note that it is not complete in terms of
       exampling every option format ever devised.</t>
+
+      <t>If more complex options are needed, those basic formats
+      mentioned here may be considered privimites (or 'fragment
+      types') that can be used to build more complex formats. It
+      should be noted that it is often easier to implement two options
+      with trivial formats than one option with more complex
+      format. That is not unconditional requirement though. In some
+      cases splitting one complex option into two or more simple
+      options introduces inter-option dependencies that should be
+      avoided. In such a case, it is usually better to keep one
+      complex option.</t>
 
       <section title="Option with IPv6 addresses">
         <t>This option format is used to carry one or many IPv6 addresses. In
