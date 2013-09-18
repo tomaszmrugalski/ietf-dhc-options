@@ -9,6 +9,7 @@
 <!ENTITY rfc3046 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3046.xml">
 <!ENTITY rfc3315 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3315.xml">
 <!ENTITY rfc3319 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3319.xml">
+<!ENTITY rfc3629 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3629.xml">
 <!ENTITY rfc3633 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3633.xml">
 <!ENTITY rfc3646 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3646.xml">
 <!ENTITY rfc3898 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3898.xml">
@@ -16,20 +17,27 @@
 <!ENTITY rfc4075 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4075.xml">
 <!ENTITY rfc4242 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4242.xml">
 <!ENTITY rfc4280 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4280.xml">
+<!ENTITY rfc4436 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4436.xml">
 <!ENTITY rfc4704 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4704.xml">
 <!ENTITY rfc4833 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4833.xml">
+<!ENTITY rfc4957 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4957.xml">
 <!ENTITY rfc5007 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5007.xml">
+<!ENTITY rfc5198 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5198.xml">
 <!ENTITY rfc5460 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5460.xml">
 <!ENTITY rfc5908 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5908.xml">
 <!ENTITY rfc5970 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5970.xml">
+<!ENTITY rfc6059 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6059.xml">
 <!ENTITY rfc6334 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6334.xml">
 <!ENTITY rfc6422 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6422.xml">
 <!ENTITY rfc6440 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6440.xml">
 <!ENTITY rfc6603 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6603.xml">
 <!ENTITY rfc6610 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6610.xml">
 <!ENTITY rfc6644 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6644.xml">
+<!ENTITY I-D.ietf-softwire-4rd PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-softwire-4rd.xml">
+<!ENTITY I-D.ietf-dhc-v4configuration PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-dhc-v4configuration.xml">
+<!ENTITY I-D.ietf-softwire-map-dhcp PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-softwire-map-dhcp.xml">
 ]>
-<rfc category="bcp" docName="draft-ietf-dhc-option-guidelines-13"
+<rfc category="bcp" docName="draft-ietf-dhc-option-guidelines-14"
      ipr="trust200902" updates="3315">
   <front>
     <title abbrev="DHCPv6 Option Guidelines">Guidelines for Creating New
@@ -218,21 +226,29 @@
       are candidates for being configured by DHCPv6.</t>
 
       <t>The presence of such a knob isn't enough, because DHCPv6 also
-      presents the extension of an administrative domain - the operator of the
-      network to which the client is currently attached. Someone runs not only
-      the local switching network infrastructure that the client is directly
-      (or wirelessly) attached to, but the various methods of accessing the
-      external Internet via local assist services that the network must also
-      provide (such as domain name servers, or routers). This means that in
-      addition to the existence of a configuration parameter, one must also
-      ask themselves if it is reasonable for this parameter to be set by the
-      directly attached network's administrators.</t>
+      presents the extension of an administrative domain - the
+      operator of the network to which the client is currently
+      attached. Someone runs not only the local switching network
+      infrastructure that the client is directly (or wirelessly)
+      attached to, but the various methods of accessing the external
+      Internet via local assist services that the network must also
+      provide (such as domain name servers, or routers).  This means
+      that, even if a configuration parameter can potentially
+      delivered by DHCPv6, it is necessary to evaluate whether it is
+      reasonable for this parameter to be under the control of the
+      administrator of whatever network a client is attached to at any
+      given time.</t>
 
-      <t>Note that the client is not required to configure any of these values
-      received via DHCPv6 (for example, due to having a value manually
-      configured by its own operator). Bear in mind that doing so might cause
-      the client to be rejected network attachment privileges, and this is one
-      of the main reasons for the use of DHCPv6 in corporate enterprises.</t>
+      <t>Note that the client is not required to configure any of
+      these values received via DHCPv6 (e.g., due to having these
+      values locally configured by its own administrator). But it
+      needs to be noted that overriding DHCPv6-provided values may
+      cause the client to be denied certain services in the network to
+      which it has attached. The possibility of having higher level of
+      control over client node configuration is one of the reasons
+      that DHCPv6 is preferred in enterprise networks.
+      </t>
+
     </section>
 
     <section title="General Principles">
@@ -282,7 +298,7 @@
       exampling every option format ever devised.</t>
 
       <t>If more complex options are needed, those basic formats
-      mentioned here may be considered privimites (or 'fragment
+      mentioned here may be considered as primitives (or 'fragment
       types') that can be used to build more complex formats. It
       should be noted that it is often easier to implement two options
       with trivial formats than one option with more complex
@@ -516,8 +532,8 @@
 
       <t>An alternate encoding to support multiple URIs is available. An
       option must be defined to use either the single URI format above or
-      the multiple URL format below depending on whether a single is always
-      sufficient or if multiple URLs are possible.
+      the multiple URI format below depending on whether a single is always
+      sufficient or if multiple URIs are possible.
       </t>
 
         <figure align="center" anchor="option-with-multiple-URIs"
@@ -550,14 +566,21 @@
       </section>
 
       <section title="Option with Text String">
-        <t>A text string is a sequence of characters that have no semantics.
-        The encoding (such as 7-bit ASCII, NVT-ASCII, UTF-8) of the text
-        string MUST be specified.
-        If a data format has semantics other than just being text, it is not a
-        string. E.g., a FQDN is not a string, and a URI is also not a string,
-        because they have different semantics. A string must not enclude any
-        terminator (such as a null byte). This option format can be used
-        to carry a text string:</t>
+        <t>A text string is a sequence of characters that have no
+        semantics.  The encoding of the text string MUST be
+        specified. Unless otherwise specified, all text strings in
+        newly defined options are expected to be Unicode strings that
+        are encoded using UTF-8 <xref target="RFC3629"/> in
+        Net-Unicode form <xref target="RFC5198"/>. Please note that
+        all strings containing only 7 bit ASCII characters are also
+        valid UTF-8 Net-Unicode strings. </t>
+
+        <t>If a data format has semantics other than just
+        being text, it is not a string. E.g., a FQDN is not a string,
+        and a URI is also not a string, because they have different
+        semantics. A string must not enclude any terminator (such as a
+        null byte). This option format can be used to carry a text
+        string:</t>
 
         <figure align="center" anchor="option-with-text-string"
                 title="Option with text string">
@@ -725,7 +748,7 @@
       values the server will provide, they must request all formats. So in the
       case where the server is configured with all formats, DHCPv6 message
       bandwidth is wasted on option contents that are redundant. Also, the
-      DHCPv6 option space is wasted, as three new option codes are required,
+      DHCPv6 option number space is wasted, as three new option codes are required,
       rather than one.</t>
 
       <t>It also becomes unclear which types of values are mandatory, and how
@@ -817,26 +840,30 @@
     </section>
 
     <section title="Encapsulated options in DHCPv6">
-      <t>Most options are conveyed in a DHCPv6 message directly. Although
-      there is no codified normative language for such options, they are often
-      referred to as top-level options. Many options may include other
-      options. Such inner options are often referred to as encapsulated or
-      nested options. Those options are sometimes called sub-options, but this
-      term actually means something else, and therefore should never be
-      used to describe encapsulated options. It is recommended to use term
-      "encapsulated" as this terminology is used in <xref
-      target="RFC3315"></xref>. The difference between encapsulated and
-      sub-options are that the former uses normal DHCPv6 option space codes,
-      while the latter uses option space specific to a given parent option. It
-      should be noted that, contrary to DHCPv4, there is no shortage of option
-      numbers. Therefore almost all options share a common option space. For
-      example option type 1 meant different things in DHCPv4, depending if it
-      was located in top-level or inside of Relay Agent Information option.
-      There is no such ambiguity in DHCPv6 (with the unfortunate exception of
-      <xref target="RFC5908"></xref>, which never got proper review from the
-      DHC working group and contains many errors, and should not under any
-      circumstances be used as a template for future DHCP option
-      definitions).</t>
+      <t>Most options are conveyed in a DHCPv6 message
+      directly. Although there is no codified normative language for
+      such options, they are often referred to as top-level
+      options. Many options may include other options. Such inner
+      options are often referred to as encapsulated or nested
+      options. Those options are sometimes called sub-options, but
+      this term actually means something else, and therefore should
+      never be used to describe encapsulated options. It is
+      recommended to use term "encapsulated" as this terminology is
+      used in <xref target="RFC3315"></xref>. The difference between
+      encapsulated and sub-options are that the former uses normal
+      DHCPv6 option numbers, while the latter uses option
+      number space specific to a given parent option. It should be noted
+      that, contrary to DHCPv4, there is no shortage of option
+      numbers. Therefore almost all options share a common option
+      space. For example option type 1 meant different things in
+      DHCPv4, depending if it was located in top-level or inside of
+      Relay Agent Information option.  There is no such ambiguity in
+      DHCPv6 (with the unfortunate exception of <xref
+      target="RFC5908"></xref>,which was published without following
+      the advice provided during the DHC working group review, and
+      contains many errors. <xref target="RFC5908"/> SHOULD NOT under
+      any circumstances be used as a template for future DHCP option
+      definitions.</t>
 
       <t>From the implementation perspective, it is easier to implement
       encapsulated options rather than sub-options, as the implementers do not
@@ -855,13 +882,16 @@
       "encapsulated option" term is typically used, regardless of the nesting
       level.</t>
 
-      <t>When defining configuration means for more complex mechanisms, it may
-      be tempting to simply use sub-options. That should be avoided,
-      as it increases complexity of the parser. It is much easier, faster and
-      less error prone to parse a larger number of options on a single
-      (top-level) scope, than parse options on several scopes. The use of
-      sub-options should be avoided as much as possible, but it is better to
-      use sub-options rather than conditional formatting.</t>
+      <t>When defining a DHCP-based configuration mechanism for a
+      protocol that requires something more complex than a single
+      option, it may be tempting to group configuration values using
+      sub-options. That should preferably be avoided, as it increases
+      complexity of the parser. It is much easier, faster and less
+      error prone to parse a large number of options on a single
+      (top-level) scope, than parse options on several scopes. The use
+      of sub-options should be avoided as much as possible, but it is
+      better to use sub-options rather than conditional
+      formatting.</t>
 
       <t>It should be noted that currently there is no clear way defined for
       requesting sub-options. Most known implementations are simply using
@@ -876,7 +906,7 @@
       network. Such problems arose during designs of MAP <xref
       target="I-D.ietf-softwire-map-dhcp"></xref> and 4rd <xref
       target="I-D.ietf-softwire-4rd"></xref>. While it would be easier for
-      provisioned clients to get ready to use per client option values, such
+      provisioned clients to get ready to use per-client option values, such
       requirement puts exceedingly large loads on the server side. The new
       extensions may introduce new implementation complexity and additional
       database state on the server. Alternatives should be considered, if
@@ -905,14 +935,17 @@
       reconfiguration, support for this mechanism is optional and cannot be
       relied upon.</t>
 
-      <t>Even when DHCP clients refresh their configuration information, not
-      all consumers of DHCP-sourced configuration data notice these changes.
-      For instance, if a server is started using parameters received in an
-      early DHCP transaction, but does not check for updates from DHCP, it may
-      well continue to use the same parameter indefinitely. Modern
-      notification systems take care of reconfiguring services when the client
-      moves to a new network, but it's worth bearing in mind that a renew may
-      not actually result in the client taking up new configuration
+      <t>Even when DHCP clients refresh their configuration
+      information, not all consumers of DHCP-sourced configuration
+      data notice these changes.  For instance, if a server is started
+      using parameters received in an early DHCP transaction, but does
+      not check for updates from DHCP, it may well continue to use the
+      same parameter indefinitely. There are a few operating systems
+      that take care of reconfiguring services when the client moves
+      to a new network(e.g. based on mechanisms like <xref
+      target="RFC4436"/>, <xref target="RFC4957"/> or <xref
+      target="RFC6059"/>), but it's worth bearing in mind that a renew
+      may not always result in the client taking up new configuration
       information that it receives.</t>
 
       <t>In light of the above, when designing an option you should take into
@@ -926,12 +959,13 @@
       example of such a case is a home network with a connection to two
       independent ISPs.</t>
 
-      <t>DHCPv6 was not initially designed with multiple provisioning domains.
-      Although <xref target="RFC3315"></xref> states that a client that
-      receives more than one ADVERTISE message, may respond to one or more of
-      them, such capability was never observed in any known implementations.
-      Existing clients will pick one server and will continue configuration
-      process with that server, ignoring all other servers.</t>
+      <t>DHCPv6 was not initially designed with multiple provisioning
+      domains in mind.  Although <xref target="RFC3315"></xref> states
+      that a client that receives more than one ADVERTISE message, may
+      respond to one or more of them, such capability was never
+      observed in any known implementations.  Existing clients will
+      pick one server and will continue configuration process with
+      that server, ignoring all other servers.</t>
 
       <t>This is a generic DHCP protocol issue and should not be dealt within
       each option separately. This issue is better dealt with using a
@@ -1058,17 +1092,19 @@
     </section> -->
 
     <section anchor="fragmentation" title="Option Size">
-      <t><xref target="RFC3315">DHCPv6</xref> allows for packet sizes up to
-      64KB. First, through its use of link-local addresses, it avoids many of
-      the deployment problems that plague DHCPv4, and is actually an UDP over
-      IPv6 based protocol (compared to DHCPv4, which is mostly UDP over IPv4
-      protocol, but with layer 2 hacks). Second, RFC 3315 explicitly refers
-      readers to RFC 2460 Section 5, which describes an MTU of 1280 octets and
-      a minimum fragment reassembly of 1500 octets. It's feasible to suggest
-      that DHCPv6 is capable of having larger options deployed over it, and at
-      least no common upper limit is yet known to have been encoded by its
-      implementors. It is impossible to describe any fixed limit that cleanly
-      divides those too big from the workable.</t>
+      <t><xref target="RFC3315">DHCPv6</xref> allows for packet sizes
+      up to 64KB. First, through its use of link-local addresses, it
+      avoids many of the deployment problems that plague DHCPv4, and
+      is actually an UDP over IPv6 based protocol (compared to DHCPv4,
+      which is mostly UDP over IPv4 protocol, but with layer 2
+      hacks). Second, RFC 3315 explicitly refers readers to RFC 2460
+      Section 5, which describes an MTU of 1280 octets and a minimum
+      fragment reassembly of 1500 octets. It's feasible to suggest
+      that DHCPv6 is capable of having larger options deployed over
+      it, and at least no common upper limit is yet known to have been
+      encoded by its implementors. It is not really possible to
+      describe a fixed limit that cleanly divides workable option
+      sizes from those that are too big.</t>
 
       <t>It is advantageous to prefer option formats which contain the desired
       information in the smallest form factor that satisfies the requirements.
@@ -1086,11 +1122,11 @@
       option may appear once or multiple times. The default assumption is only
       once.</t>
 
-      <t>Relay agents have to do fragment reassembly and fragmentation on
-      transmission. So while fragmentation is allowed, if a new option
-      results in significant fragmentation, it probably isn't a good choice for
-      DHCP configuration; instead DHCP should simply point to a URI where the
-      configuration information can be obtained.</t>
+      <t>In general, if a lot of data needs to be configured
+      (i.e. large option lengths), DHCPv6 may not be the best choice
+      to deliver such configuration information and SHOULD simply be
+      used to deliver an URI that specifies how to obtain the actual
+      configuration information.</t>
     </section>
 
     <section anchor="singleton" title="Singleton options">
@@ -1099,11 +1135,11 @@
       multiple instances are reserved for stateful options, like IA_NA
       or IA_PD. For most other options it is usually expected that
       they will appear at most once. Such options are called singleton
-      options.  Sadly, it is often not clearly specified in RFCs that
-      were published up to this date whether only one or more option
-      instances are allowed. Documents that define new defined options
-      SHOULD state whether new options are singletons or not. Unless
-      otherwise specified, new defined options are singletons.</t>
+      options.  Sadly, RFCs have often failed to clearly specify
+      whether a given option can appear more than once or
+      not. Documents that define new options SHOULD state whether
+      these options are singletons or not. Unless otherwise specified,
+      newly defined options are considered to be singletons.</t>
 
       <t>When deciding whether a single or multiple option instances
       are allowed in a message, take into consideration how the
@@ -1134,13 +1170,11 @@
     <section anchor="optionOrder" title="Option Order">
       <t>Option order, either the order among many DHCPv6 options or the order
       of multiple instances of the same option, SHOULD NOT be significant and
-      MUST NOT be assumed. An exception may be security relevant options,
-      which are often created last and put at the last position, or whose location
-      indicates the protected range.</t>
+      MUST NOT be assumed. </t>
 
-      <t>As there is no explicit order for multiple instance of the same option,
-      an option definition SHOULD instead restrict the order within the option
-      by using a list of items rather than a single item.</t>
+      <t>As there is no explicit order for multiple instance of the
+      same option, an option definition SHOULD instead restrict
+      ordering by using a single option that contains ordered fields.</t>
     </section>
 
     <section anchor="relayOptions" title="Relay Options">
@@ -1150,10 +1184,10 @@
       maintained by IANA. Different from DHCPv4, in DHCPv6, Relay options are
       defined in the same way as client/server options, and they too use the
       same number space as client/server options. Future DHCPv6
-      Relay options MUST  be allocated from this single DHCPv6 Option code
+      Relay options MUST  be allocated from this single DHCPv6 Option number
       space.</t>
 
-      <t>However, the Relay-Supplied Options Option <xref
+      <t>E.g. the Relay-Supplied Options Option <xref
       target="RFC6422"></xref> may also contain some DHCPv6 options as
       permitted, such as the EAP Re-authentication Protocol (ERP) Local Domain
       Name DHCPv6 Option <xref target="RFC6440"></xref>.</t>
@@ -1168,11 +1202,11 @@
           contents (in the event that they will not fit in the packet, later
           options are to be dropped).--></t>
 
-      <t>It doesn't make sense for some options to be requested using Option
-      Request Option, such as those formed by elements of the protocol's
-      internal workings, or are formed on either end by DHCPv6-level software
-      engaged in some exchange of information. When in doubt, it is prudent to
-      assume that any new option must be present on the relevant option
+      <t>For some options, such as the options required for the
+      functioning of the DHCPv6 protocol itself, it doesn't make sense
+      to require that they be explicitly requested using the Option
+      Request Option.  In all other cases, it is prudent to assume
+      that any new option must be present on the relevant option
       request list if the client desires to receive it.</t>
 
       <!--
@@ -1199,12 +1233,12 @@
       mechanism rather than define it again. See <xref
       target="templates"></xref> for proposed examples on how to do that.</t>
 
-      <t>Creators of DHCPv6 options should not require special ordering of
-      options either in the relevant request option, or in the order of
-      options within the packet. Although it is reasonable to expect that
-      options will be processed in the order they appear in ORO, server
-      software is not required to sort DHCPv6 options into the same order in
-      reply messages.</t>
+      <t>Creators of DHCPv6 options cannot not assume special ordering
+      of options either as they appear in the option request option,
+      or as they appear within the packet. Although it is reasonable
+      to expect that options will be processed in the order they
+      appear in ORO, server software is not required to sort DHCPv6
+      options into the same order in reply messages.</t>
 
       <t>It should also be noted that options values are never aligned within
       the DHCP packet, even the option code and option length may appear on
@@ -1226,9 +1260,10 @@
       provisioning of the transition technologies in DHCPv4, which will be
       obsoleted together with IPv4.</t>
 
-      <t>When the network infrastructure becomes IPv6-only, the support for
-      IPv4-only nodes may still be needed. In this scenario, provisioning IPv4
-      configuration over IPv6-only networks <xref
+      <t>When the network infrastructure becomes IPv6-only, the
+      support for IPv4-only nodes may still be needed. In such a
+      scenario, a mechanism for providing IPv4 configuration
+      information over IPv6-only networks such as <xref
       target="I-D.ietf-dhc-v4configuration"></xref> may be needed.</t>
     </section>
 
@@ -1404,8 +1439,8 @@
     </section>
 
     <section title="Acknowledgements">
-      <t>Authors would like to thank Simon Perreault, Bernie Volz and Ted
-      Lemon for their comments.</t>
+      <t>Authors would like to thank Simon Perreault, Bernie Volz, Ted
+      Lemon, Bud Milwood and Ralph Droms for their comments.</t>
     </section>
   </middle>
 
@@ -1424,6 +1459,8 @@
 
       &rfc3319;
 
+      &rfc3629;
+
       &rfc3633;
 
       &rfc3646;
@@ -1438,17 +1475,25 @@
 
       &rfc4280;
 
+      &rfc4436;
+
       &rfc4704;
 
       &rfc4833;
 
+      &rfc4957;
+
       &rfc5007;
+
+      &rfc5198;
 
       &rfc5460;
 
       &rfc5908;
 
       &rfc5970;
+
+      &rfc6059;
 
       &rfc6334;
 
@@ -1462,11 +1507,11 @@
 
       &rfc6644;
 
-      <?rfc include='reference.I-D.ietf-softwire-map-dhcp'?>
+      &I-D.ietf-softwire-map-dhcp;
 
-      <?rfc include='reference.I-D.ietf-softwire-4rd'?>
+      &I-D.ietf-softwire-4rd;
 
-      <?rfc include='reference.I-D.ietf-dhc-v4configuration'?>
+      &I-D.ietf-dhc-v4configuration;
 
       <reference anchor="iana"
                  target="http://www.iana.org/assignments/dhcpv6-parameters/">
