@@ -954,23 +954,42 @@
     </section>
 
     <section anchor="multpleProDomain" title="Multiple provisioning domains">
-      <t>In some cases there could be more than one DHCPv6 server on a link,
-      with each provisioning a different set of parameters. One notable
-      example of such a case is a home network with a connection to two
-      independent ISPs.</t>
 
-      <t>DHCPv6 was not initially designed with multiple provisioning
-      domains in mind.  Although <xref target="RFC3315"></xref> states
-      that a client that receives more than one ADVERTISE message, may
-      respond to one or more of them, such capability was never
-      observed in any known implementations.  Existing clients will
-      pick one server and will continue configuration process with
-      that server, ignoring all other servers.</t>
+   <t>In some cases there could be more than one DHCPv6 server on a
+   link, with each providing a different set of parameters.  One
+   notable example of such a case is a home network with a connection
+   to two independent ISPs.</t>
 
-      <t>This is a generic DHCP protocol issue and should not be dealt within
-      each option separately. This issue is better dealt with using a
-      protocol-level solution and fixing this problem should not be attempted
-      on a per option basis.</t>
+   <t>The DHCPv6 protocol specification does not provide clear advice
+   on how to handle multiple provisioning sources.  Although <xref
+   target="RFC3315"/> states that a client that receives more than one
+   ADVERTISE message, may respond to one or more of them, such
+   capability has not been observed in existing implementations.
+   Existing clients will pick one server and will continue
+   configuration process with that server, ignoring all other
+   servers.</t>
+
+   <t>In addition, a node that acts as a DHCPv6 client may be
+   connected to more than one physical network. In this case, it will
+   in most cases operate a separate DHCP client state machine on each
+   interface, acquiring different, possibly conflicting information
+   through each.  This information will not be acquired in any
+   synchronized way.</t>
+
+   <t>Existing nodes cannot be assumed to systematically segregate
+   configuration information on the basis of its source; as a result,
+   it is quite possible that a node may receive an FQDN on one network
+   interface, but do the DNS resolution on a different network interface,
+   using different DNS servers.   As a consequence, DNS resolution done
+   by the DHCP server is more likely to behave predictably than DNS
+   resolution done on a multi-interface or multi-homed client.</t>
+
+   <t>This is a generic DHCP protocol issue and should not be dealt
+   within each option separately.  This issue is better dealt with
+   using a protocol-level solution and fixing this problem should not
+   be attempted on a per option basis. Work is ongoing in the IETF to
+   provide a systematic solution to this problem.</t>
+
     </section>
 
     <section title="Chartering Requirements and Advice for Responsible ADs">
