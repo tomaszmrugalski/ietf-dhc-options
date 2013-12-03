@@ -18,15 +18,18 @@
 <!ENTITY rfc4085 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4085.xml">
 <!ENTITY rfc4242 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4242.xml">
 <!ENTITY rfc4280 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4280.xml">
+<!ENTITY rfc4303 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4303.xml">
 <!ENTITY rfc4436 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4436.xml">
 <!ENTITY rfc4704 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4704.xml">
 <!ENTITY rfc4833 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4833.xml">
 <!ENTITY rfc4957 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4957.xml">
 <!ENTITY rfc5007 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5007.xml">
 <!ENTITY rfc5198 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5198.xml">
+<!ENTITY rfc5223 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5223.xml">
 <!ENTITY rfc5460 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5460.xml">
 <!ENTITY rfc5908 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5908.xml">
 <!ENTITY rfc5970 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5970.xml">
+<!ENTITY rfc5986 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5986.xml">
 <!ENTITY rfc6059 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6059.xml">
 <!ENTITY rfc6334 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6334.xml">
 <!ENTITY rfc6422 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6422.xml">
@@ -160,7 +163,8 @@
     <abstract>
       <t>This document provides guidance to prospective DHCPv6 Option
       developers to help them creating option formats that are easily
-      adoptable by existing DHCPv6 software. This document updates
+      adoptable by existing DHCPv6 software. It also provides guidelines
+      for expert reviewers to evaluate new registrations. This document updates
       RFC3315.</t>
     </abstract>
   </front>
@@ -183,7 +187,8 @@
       merely faced with the task of handling a given option's format on the
       wire. The option must fit into every stage of the system's process,
       starting with the user interface used to enter the configuration up to
-      the machine interfaces where configuration is ultimately consumed.<!-- To help understand the potential
+      the machine interfaces where configuration is ultimately consumed.
+      <!-- To help understand the potential
       implementation challenges of any new DHCP Option, <xref
       target="isc">one implementation's approach to tackling DHCP
       Option formats</xref> has been included as an Appendix.--></t>
@@ -218,6 +223,10 @@
       pitfalls in this list entirely, or failing that, to make software
       implementors lives easier and improve its chances for widespread
       adoption.</t>
+
+      <t>This document is envisaged as a help for protocol developers
+      that define new options and for expert reviewers that review
+      submitted proposals.</t>
     </section>
 
     <section title="When to Use DHCPv6">
@@ -362,13 +371,22 @@
       </section>
 
       <section title="Option with a single flag (boolean)">
-        <t>Sometimes it is useful to convey a single flag that can either take
+        <t>Sometimes it is useful to convey a single flag that can take either
         on or off values. Instead of specifying an option with one bit of
         usable data and 7 bits of padding, it is better to define an option
         without any content. It is the presence or absence of the option that
         conveys the value. This approach has the additional benefit of absent
         option designating the default, i.e. administrator has to take
         explicit actions to deploy the opposite of the default value.</t>
+
+        <t>The absence of the option represents the default value and
+        the presence of the option represents the other value, but
+        that this does not necessarily mean that absence is "off" (or
+        "false") and presence is "on" (or "true").  That is, if it's
+        desired that the default value for a bistable option is
+        "true"/"on", then the presence of that option would turn it
+        off (make it false). If the option presence signifies off/false state,
+        that should be refleced in the option name, e.g. OPTION_DISABLE_FOO.</t>
 
         <figure align="center" anchor="option-with-boolean-format"
                 title="Option for conveying boolean">
@@ -408,7 +426,7 @@
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 |          option-code          |         option-length         |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|  prefix6-len  |              ipv6-prefix                      |
+|  prefix6len   |              ipv6-prefix                      |
 +-+-+-+-+-+-+-+-+           (variable length)                   |
 .                                                               .
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -416,13 +434,13 @@
           </figure></t>
 
         <t>option-length is set to 1 + length of the IPv6 prefix.</t>
-        
-        <t>prefix6-len is one octet long and specifies the length in bits of the IPv6 prefix.
-        Typically allowed values are 0 to 128.</t>
+
+        <t>prefix6len is one octet long and specifies the length in bits of the
+        IPv6 prefix. Typically allowed values are 0 to 128.</t>
 
         <t>ipv6-prefix field is a variable length field that specifies the
-        IPv6 prefix. The length is (prefix6-len + 7) / 8. This field is padded
-        with zero bits up to the nearest octet boundary when prefix6-len is
+        IPv6 prefix. The length is (prefix6len + 7) / 8. This field is padded
+        with zero bits up to the nearest octet boundary when prefix6len is
         not divisible by 8.</t>
 
         <t>Examples of use: <list style="symbols">
@@ -562,8 +580,10 @@
         </figure>
 
       <t>The uri-len is two octets long and specifies the length of
-      the uri data.</t>
-     
+      the uri data. Although URI format in theory supports up to 64k
+      of data, in practice large chunks of data may be problematic.
+      See <xref target="fragmentation"/> for details.</t>
+
       </section>
 
       <section title="Option with Text String">
@@ -576,12 +596,13 @@
         all strings containing only 7 bit ASCII characters are also
         valid UTF-8 Net-Unicode strings. </t>
 
-        <t>If a data format has semantics other than just
-        being text, it is not a string. E.g., a FQDN is not a string,
-        and a URI is also not a string, because they have different
-        semantics. A string must not enclude any terminator (such as a
-        null byte). This option format can be used to carry a text
-        string:</t>
+        <t>If a data format has semantics other than just being text,
+        it is not a string. E.g., a FQDN is not a string, and a URI is
+        also not a string, because they have different semantics. A
+        string must not include any terminator (such as a null
+        byte). The null byte is treated as any other character and
+        does not have any special meaning. This option format can be
+        used to carry a text string:</t>
 
         <figure align="center" anchor="option-with-text-string"
                 title="Option with text string">
@@ -630,7 +651,7 @@
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-...-+-+-+-+-+-+-+
 ]]></artwork>
         </figure>
-        
+
       <t>The text-len is two octets long and specifies the length of
       the string.</t>
 
@@ -699,6 +720,10 @@
 
             <t><xref target="RFC3898">NIS Domain Name (many domains)</xref>
             (many domains)</t>
+
+            <t><xref target="RFC5223">LoST Server Domain name</xref></t>
+
+            <t><xref target="RFC5986">LIS Domain name</xref></t>
 
             <t><xref target="RFC6334">DS-Lite AFTR location</xref> (a single
             FQDN)</t>
@@ -860,15 +885,15 @@
           (e.g. no AAAA records for specified FQDN);</t>
 
           <t>Address family must be specified (A, AAAA or any); the information
-	  being configured may require specific address family (e.g. IPv6), but
-	  there may be a DNS record only of another type (e.g. A only with IPv4
-	  address).</t>
+          being configured may require specific address family (e.g. IPv6), but
+          there may be a DNS record only of another type (e.g. A only with IPv4
+          address).</t>
 
           <t>What should the client do if there are multiple records available
           (use only the first one, use all, use one and switch to the second
           if the first fails for whatever reason, etc.); This may be an issue
-	  if there is an expectation that the parameter being configured
-	  will need exactly one address;</t>
+          if there is an expectation that the parameter being configured
+          will need exactly one address;</t>
 
           <t>Multi-homed devices may be connected to different administrative
           domains with each domain providing different information in DNS
@@ -942,12 +967,9 @@
       space. For example option type 1 meant different things in
       DHCPv4, depending if it was located in top-level or inside of
       Relay Agent Information option.  There is no such ambiguity in
-      DHCPv6 (with the unfortunate exception of <xref
-      target="RFC5908"></xref>,which was published without following
-      the advice provided during the DHC working group review, and
-      contains many errors. <xref target="RFC5908"/> SHOULD NOT under
-      any circumstances be used as a template for future DHCP option
-      definitions.</t>
+      DHCPv6 (with the exception of <xref target="RFC5908"></xref>,
+      which SHOULD NOT be used as a template for future DHCP option
+      definitions).</t>
 
       <t>From the implementation perspective, it is easier to implement
       encapsulated options rather than sub-options, as the implementers do not
@@ -1076,16 +1098,46 @@
 
     </section>
 
-    <section title="Chartering Requirements and Advice for Responsible ADs">
+    <section title="Chartering Requirements and Advice for Responsible Area Directors">
       <t>Adding a simple DHCP option is straightforward, and generally
       something that any working group can do, perhaps with some help from
       designated DHCP experts. However, when new fragment types need to be
       devised, this requires the attention of DHCP experts, and should not be
       done in a working group that doesn't have a quorum of such experts. This
       is true whether the new fragment type has the same structure as an
-      existing fragment type, but has different semantics. It is equally true
-      when the new format has a new structure.</t>
+      existing fragment type but has different semantics, or the new format
+      has a new structure.</t>
 
+      <t>Responsible Area Directors for working groups that wish to add a work
+      item to a working group charter to define a new DHCP option should
+      get clarity from the working group as to whether the new option will
+      require a new fragment type or new semantics, or whether it is a
+      simple DHCP option that fits existing definitions.</t>
+
+      <t>If a working group needs a new fragment type, it is preferable to
+      see if another working group exists whose members already have
+      sufficient expertise to evaluate the new work.  If such a working
+      group is available, the work should be chartered in that working
+      group instead.  If there is no other working group with DHCP
+      expertise that can define the new fragment type, the responsible AD
+      should seek help from known DHCP experts within the IETF to provide
+      advice and frequent early review as the original working group
+      defines the new fragment type.</t>
+
+      <t>In either case, the new option should be defined in a separate
+      document, and the work should focus on defining a new format that
+      generalizes well and can be reused, rather than a single-use
+      fragment type.  The working group that needs the new fragment type
+      can define their new option referencing the new fragment type
+      document, and the work can generally be done in parallel, avoiding
+      unnecessary delays.  Having the definition in its own document will
+      foster reuse of the new fragment type.</t>
+
+      <t>The responsible AD should work with all relevant working group
+      chairs and DHCP experts to ensure that the new fragment type
+      document has in fact been carefully reviewed by the experts and
+      appears satisfactory.</t>
+      <!--
       <t>Responsible Area Directors for working groups that wish to add a work
       item to a working group charter to define a new DHCP option should get
       clarity from the working group as to whether the new option is a simple
@@ -1117,7 +1169,7 @@
       the new fragment type. The responsible AD should work with the working
       group chairs and designated DHCP experts to ensure that new fragment
       type document has in fact been carefully reviewed by the experts and
-      appears satisfactory.</t>
+      appears satisfactory.</t> -->
 
       <t>Responsible area directors for working groups that are considering
       defining options that actually update the DHCP protocol, as opposed to
@@ -1226,9 +1278,9 @@
       once.</t>
 
       <t>In general, if a lot of data needs to be configured
-      (i.e. large option lengths), DHCPv6 may not be the best choice
+      (for example, some option lengths are quite large), DHCPv6 may not be the best choice
       to deliver such configuration information and SHOULD simply be
-      used to deliver an URI that specifies how to obtain the actual
+      used to deliver a URI that specifies where to obtain the actual
       configuration information.</t>
     </section>
 
@@ -1240,9 +1292,15 @@
       they will appear at most once. Such options are called singleton
       options.  Sadly, RFCs have often failed to clearly specify
       whether a given option can appear more than once or
-      not. Documents that define new options SHOULD state whether
+      not.</t>
+
+      <t>Documents that define new options SHOULD state whether
       these options are singletons or not. Unless otherwise specified,
-      newly defined options are considered to be singletons.</t>
+      newly defined options are considered to be singletons. If multiple
+      instances are allowed, the document MUST explain how to use them.
+      Care should be taken to not assume the they will be processed
+      in the other they appear in the message. See <xref target="optionOrder" />
+      for more details.</t>
 
       <t>When deciding whether a single or multiple option instances
       are allowed in a message, take into consideration how the
@@ -1272,12 +1330,18 @@
 
     <section anchor="optionOrder" title="Option Order">
       <t>Option order, either the order among many DHCPv6 options or the order
-      of multiple instances of the same option, SHOULD NOT be significant and
-      MUST NOT be assumed. </t>
+      of multiple instances of the same option, SHOULD NOT be significant.
+      New documents  MUST NOT assume any specific option processing order.</t>
 
       <t>As there is no explicit order for multiple instance of the
       same option, an option definition SHOULD instead restrict
       ordering by using a single option that contains ordered fields.</t>
+
+      <t>As <xref target="RFC3315" /> does not impose option order, some
+      implementations use hash tables to store received options (which is a
+      conformant behavior). Depending on the hash implementation, the
+      processing order is almost always different then the order in which
+      options appeared in the packet on wire.</t>
     </section>
 
     <section anchor="relayOptions" title="Relay Options">
@@ -1489,11 +1553,17 @@
       as it replaces existing with new text.</t>
     </section>
 
-    <section title="Security Considerations">
+    <section anchor="security-consider" title="Security Considerations">
       <t>DHCPv6 does have an Authentication mechanism (<xref
       target="RFC3315"></xref>) that makes it possible for DHCPv6 software to
       discriminate between authentic endpoints and man-in-the-middle. Other
-      authentication mechanisms may optionally be deployed.</t>
+      authentication mechanisms may optionally be deployed. Sadly, as of late
+      2013, the authentication in DHCPv6 is rarely used and support for it is
+      not common in existing implementations. Some specific deployment types
+      make it mandatory (or parts of thereof, e.g. DOCSIS3.0 compatible cable
+      modems require reconfigure-key support), so in certain cases specific
+      authentication aspects can be relied upon. That is not true in the generic
+      case, though.</t>
 
       <t>So, while creating a new option, it is prudent to assume that the
       DHCPv6 packet contents are always transmitted in the clear, and actual
@@ -1535,6 +1605,32 @@
       can introduce errors, so authors are equally strongly advised to refer
       to the base specification for any such validation language rather than
       copying it into the new specification.</t>
+
+      <t>Also see <xref target="privacy-consider"/>.</t>
+    </section>
+
+    <section anchor="privacy-consider" title="Privacy considerations">
+      <t>As discussed in <xref target="security-consider"/> the DHCPv6 packets
+      are typically transmitted in the clear, so they are susceptible to
+      eavesdropping. This should be considered when defining options that may
+      convey personally identifying information (PII) or any other type of
+      sensitive data.</t>
+
+      <t>If the transmission of sensitive or confidential content is required,
+      it is still possible to secure communication between relay agents and
+      servers. Relay agents and servers implementing this specification MUST
+      support the use of IPsec Encapsulating Security Payload (ESP) with
+      encryption in transport mode, according to Section 3.1.1 of <xref
+      target="RFC4303"/> and Section 21.1 of <xref target="RFC3315"/>. Sadly,
+      this requirement is almost universally ingored in real deployments. Even
+      if the communication path between relay agents and server is secured, the
+      path between clients and relay agents or server is not.</t>
+
+      <t>Unless underlying transmission technology provides secure transmission
+      channel, the DHCPv6 options SHOULD NOT include PII or other sensitive
+      information. If there are special circumstances that warrant sending such
+      information over unsecured DHCPv6, the dangers MUST be clearly discussed
+      in security considerations.</t>
     </section>
 
     <section title="IANA Considerations">
@@ -1543,7 +1639,8 @@
 
     <section title="Acknowledgements">
       <t>Authors would like to thank Simon Perreault, Bernie Volz, Ted
-      Lemon, Bud Millwood and Ralph Droms for their comments.</t>
+      Lemon, Bud Millwood, Ralph Droms, Barry Leiba and Benoit Claise
+      for their comments.</t>
     </section>
   </middle>
 
@@ -1580,6 +1677,8 @@
 
       &rfc4280;
 
+      &rfc4303;
+
       &rfc4436;
 
       &rfc4704;
@@ -1592,11 +1691,15 @@
 
       &rfc5198;
 
+      &rfc5223;
+
       &rfc5460;
 
       &rfc5908;
 
       &rfc5970;
+
+      &rfc5986;
 
       &rfc6059;
 
