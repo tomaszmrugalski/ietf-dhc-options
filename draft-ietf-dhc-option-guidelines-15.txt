@@ -1615,9 +1615,9 @@ Internet-Draft          DHCPv6 Option Guidelines           December 2013
 26.  Acknowledgements
 
    Authors would like to thank Simon Perreault, Bernie Volz, Ted Lemon,
-   Bud Millwood, Ralph Droms, Barry Leiba and Benoit Claise for their
-   comments.
-
+   Bud Millwood, Ralph Droms, Barry Leiba, Benoit Claise, Brian
+   Haberman, Richard Barnes, Stephen Farrell and Steward Bryant for
+   their comments.
 
 
 
