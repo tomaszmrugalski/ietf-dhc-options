@@ -1539,18 +1539,26 @@
     </section>
 
     <section title="Should the new document update existing RFCs?">
-      <t>Authors often ask themselves a question whether their proposal
-      updates exist RFCs, especially 3315. In April 2013 there were about 80
-      options defined. Had all documents that defined them also updated
-      RFC3315, comprehension of such a document set would be extremely
-      difficult. It should be noted that "extends" and "updates" are two very
-      different verbs. If a new draft defines a new option that clients
-      request and servers provide, it merely extends current standards, so
-      "updates 3315" is not required in the new document header. On the other
-      hand, if a new document replaces or modifies existing behavior, it
-      should be noted that it updates the other document. For example, <xref
-      target="RFC6644"></xref> clearly updates <xref target="RFC3315"></xref>
-      as it replaces existing with new text.</t>
+      <t>Authors often ask themselves a question whether their proposal updates
+      exist RFCs, especially 3315. In April 2013 there were about 80 options
+      defined. Had all documents that defined them also updated RFC3315,
+      comprehension of such a document set would be extremely difficult. It
+      should be noted that "extends" and "updates" are two very different
+      verbs. If a new draft defines a new option that clients request and
+      servers provide, it merely extends current standards, so "updates 3315" is
+      not required in the new document header. On the other hand, if a new
+      document replaces, modifies existing behavior, includes clarifications or
+      other corrections, it should be noted that it updates the other
+      document. For example, <xref target="RFC6644"></xref> clearly updates
+      <xref target="RFC3315"></xref> as it replaces existing with new text.</t>
+
+      <t>If in doubt, authors should try to answer a question whether
+      implementor reading the base RFC alone (without reading the new draft)
+      would be able to properly implement the software. If the base RFC is
+      sufficient, that the new draft most probably does not update the base
+      RFC. On the other hand, if reading your draft is necessary to properly
+      implement the base RFC, then the new draft most likely updates the base
+      RFC.</t>
     </section>
 
     <section anchor="security-consider" title="Security Considerations">
