@@ -41,7 +41,7 @@
 <!ENTITY I-D.ietf-dhc-v4configuration PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-dhc-v4configuration.xml">
 <!ENTITY I-D.ietf-softwire-map-dhcp PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-softwire-map-dhcp.xml">
 ]>
-<rfc category="bcp" docName="draft-ietf-dhc-option-guidelines-15"
+<rfc category="bcp" docName="draft-ietf-dhc-option-guidelines-16"
      ipr="trust200902" updates="3315">
   <front>
     <title abbrev="DHCPv6 Option Guidelines">Guidelines for Creating New
@@ -806,8 +806,8 @@
       <t>There is no single recommendation that works for every case.  It very
       much depends on the nature of the parameter being configured.  For
       parameters that are network specific or represent certain aspects of
-      network infrastructure, like NTP servers, available mobility services
-      etc., in most cases address is more usable choice. For parameters that can
+      network infrastructure, like available mobility services,
+      in most cases address is more usable choice. For parameters that can
       be considered application specific configuration, like SMTP servers our
       SIP servers, it is usually better to use FQDN.</t>
 
@@ -816,10 +816,11 @@
       resolution if previous attempt fails. That type of error recovery is
       supported by great number of applications. On the other hand, there is
       typically no API availble for applications to reconfigure over DHCP to get
-      a new address value if the one received is no longer appropriate. This problem
-      may be partially addressed by providing a list of addresses, rather than
-      just a single one. That, on the other hand, complicates client operation, as some
-      kind of failover procedure has to be defined and implemented.</t>
+      a new address value if the one received is no longer appropriate.  This
+      problem may be usually addressed by providing a list of addresses, rather
+      than just a single one.  That, on the other hand, requires defined
+      procedure how multiple addresses should be used (all at once, round robin,
+      try first and fail over to the next if it fails etc.).</t>
 
       <t>On the specific subject of desiring to configure a value using a FQDN
       instead of an address, note that most DHCPv6 server
@@ -838,25 +839,33 @@
       trivial (multiple of 16 constitutes a valid option), is explicit and does
       not allow any ambiguity. It is faster (does not require extra round trip
       time), so it is more efficient, which can be especially important for
-      energy restricted devices. It also does not require having resolution
-      capability.</t>
+      energy restricted devices. It also does not require that the client
+      implement DNS resolution.</t>
 
       <t>FQDN provide a higher level of indirection and ambiguity. In many cases
       that may be considered a benefit, but can be considered a flaw in
       others. For example, one operator suggested to have the same name being
       resolved to different addresses depending on the point of attachement of
-      the host doing resolution. This allows pointing more localized
-      services. However, such a practice requires violating DNS principles
-      ('split horizon'), and hence is not recommended.</t>
+      the host doing resolution.  This is one way to provide localized
+      addressing.  However, in order to do this, it is necessary to violate the
+      DNS convention that a query on a particular name should always return the
+      same answer (aside from ordering of IP addresses in the response, which is
+      supposed to be varied by the name server).  This same locality of
+      reference for configuration information can be achieved directly using
+      DHCP, since the DHCP server must know the network topology in order to
+      provide IP address or prefix configuration.</t>
 
       <t>The other type of ambiguity is related to multiple provisioning domains
-      (see <xref target="multpleProDomain"></xref>), and may get a different
-      answer from the DNS depending on which interface or DNS server is used to
-      do the resolution. This is particularly a problem when the normal
-      expected use of the option makes sense with private DNS zone(s), as might
-      be the case with a corporate VPN. It may also be the case that the
-      client has explicit DNS server configured so may not be using corporate
-      internal DNS server.</t>
+      (see Section 12).  The stub resolver on the DHCP client cannot at present
+      be assumed to make the DNS query for a DHCP- supplied FQDN on the same
+      interface on which it received its DHCP configuration, and may therefore
+      get a different answer from the DNS than was intended.</t>
+
+      <t>This is particularly a problem when the normal expected use of the
+      option makes sense with private DNS zone(s), as might be the case on an
+      enterprise network.  It may also be the case that the client has an
+      explicit DNS server configured, and may therefore never query the
+      enterprise network's internal DNS server.</t>
 
       <t>FQDN does require a resolution into an actual address. This implies
       the question when the FQDN resolution should be taken. There are a
@@ -866,10 +875,11 @@
       content of the option is actually consumed. For a), b) and possibly c),
       the option should really convey an address, not FQDN. The only real
       incentive to use FQDN is case d). It is the only case that allows
-      possible changes in the DNS to be picked up by clients. It may be generalized
+      possible changes in the DNS to be picked up by clients. <!-- Ted didn't
+      like that recommendation. It may be generalized
       that the preference for address or FQDN depends on its envisaged usage.
       Short lived (immediately consumed) data should be address based, while
-      long timed information is better served with FQDN.</t>
+      long timed information is better served with FQDN.--></t>
 
       <t>FQDN imposes a number of additional failure modes and issues that
       should be dealt with: <list style="numbers">
@@ -927,7 +937,11 @@
       servers for up to TTL. Depending on the values of T1 and TTL, one update
       may be faster than another. Furthermore, depending on the nature of the
       change (planned modification or unexpected failure), T1 or TTL may be
-      lowered before the change to speed up new configuration adoption.</t>
+      lowered before the change to speed up new configuration adoption.
+
+      Simply speaking protocol designers don't know what the TTL or the T1 time
+      will be, so they can't make assumptions about whether a DHCP option will
+      be refreshed more quickly based on T1 or TTL.</t>
 
       <t>Address options that are used with overly long T1 (renew timer) values
       have some characteristics of hardcoding values. That is strongly
@@ -1299,7 +1313,7 @@
       newly defined options are considered to be singletons. If multiple
       instances are allowed, the document MUST explain how to use them.
       Care should be taken to not assume the they will be processed
-      in the other they appear in the message. See <xref target="optionOrder" />
+      in the order they appear in the message. See <xref target="optionOrder" />
       for more details.</t>
 
       <t>When deciding whether a single or multiple option instances
@@ -1547,7 +1561,7 @@
       verbs. If a new draft defines a new option that clients request and
       servers provide, it merely extends current standards, so "updates 3315" is
       not required in the new document header. On the other hand, if a new
-      document replaces, modifies existing behavior, includes clarifications or
+      document replaces or modifies existing behavior, includes clarifications or
       other corrections, it should be noted that it updates the other
       document. For example, <xref target="RFC6644"></xref> clearly updates
       <xref target="RFC3315"></xref> as it replaces existing with new text.</t>
