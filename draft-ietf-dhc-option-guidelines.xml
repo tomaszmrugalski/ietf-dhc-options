@@ -807,7 +807,7 @@
       much depends on the nature of the parameter being configured.  For
       parameters that are network specific or represent certain aspects of
       network infrastructure, like available mobility services,
-      in most cases address is more usable choice. For parameters that can
+      in most cases addresses are a more usable choice. For parameters that can
       be considered application specific configuration, like
       SIP servers, it is usually better to use FQDN.</t> <!-- 2 -->
 
