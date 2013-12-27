@@ -41,7 +41,7 @@
 <!ENTITY I-D.ietf-dhc-v4configuration PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-dhc-v4configuration.xml">
 <!ENTITY I-D.ietf-softwire-map-dhcp PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-softwire-map-dhcp.xml">
 ]>
-<rfc category="bcp" docName="draft-ietf-dhc-option-guidelines-16"
+<rfc category="bcp" docName="draft-ietf-dhc-option-guidelines-15"
      ipr="trust200902" updates="3315">
   <front>
     <title abbrev="DHCPv6 Option Guidelines">Guidelines for Creating New
@@ -386,7 +386,7 @@
         desired that the default value for a bistable option is
         "true"/"on", then the presence of that option would turn it
         off (make it false). If the option presence signifies off/false state,
-        that should be refleced in the option name, e.g. OPTION_DISABLE_FOO.</t>
+        that should be reflected in the option name, e.g. OPTION_DISABLE_FOO.</t>
 
         <figure align="center" anchor="option-with-boolean-format"
                 title="Option for conveying boolean">
@@ -801,93 +801,98 @@
       make an informed decision in that regard. It is strongly
       discouraged to define both option types at the same time (see
       <xref target="aliasing"></xref>), unless there is sufficient
-      motivation to do so.</t>
+      motivation to do so.</t><!-- 1 -->
 
       <t>There is no single recommendation that works for every case.  It very
       much depends on the nature of the parameter being configured.  For
       parameters that are network specific or represent certain aspects of
-      network infrastructure, like available mobility services,
-      in most cases address is more usable choice. For parameters that can
-      be considered application specific configuration, like SMTP servers our
-      SIP servers, it is usually better to use FQDN.</t>
+      network infrastructure, like NTP servers, available mobility services
+      etc., in most cases address is more usable choice. For parameters that can
+      be considered application specific configuration, like
+      SIP servers, it is usually better to use FQDN.</t> <!-- 2 -->
 
       <t>Applications are often better suited to deal with FQDN failures than
       with address failures. Most operating systems provide a way to retry FQDN
-      resolution if previous attempt fails. That type of error recovery is
-      supported by great number of applications. On the other hand, there is
+      resolution if the previous attempt fails. That type of error recovery is
+      supported by a great number of applications. On the other hand, there is
       typically no API availble for applications to reconfigure over DHCP to get
-      a new address value if the one received is no longer appropriate.  This
-      problem may be usually addressed by providing a list of addresses, rather
-      than just a single one.  That, on the other hand, requires defined
-      procedure how multiple addresses should be used (all at once, round robin,
-      try first and fail over to the next if it fails etc.).</t>
-
-      <t>On the specific subject of desiring to configure a value using a FQDN
-      instead of an address, note that most DHCPv6 server
-      implementations will accept a Domain Name entered by the administrator,
-      and use DNS resolution to render binary IP addresses in DHCPv6 replies to
-      clients. Consequently, consider the extra packet overhead incurred on the
-      client's end to perform DNS resolution itself.  The client may be
-      operating on a battery and packet transmission is a small drain of battery
-      power (usually negligible if done once, but repeated many times may become
-      significant), and the extra RTT delays the client must endure before the service
-      is configured are at least two factors to consider in making a decision on
-      format.</t>
-
-      <t>Addresses have a benefit of being easier to implemented and handle by
-      the DHCP software.  An address option is simpler to use, its validation is
-      trivial (multiple of 16 constitutes a valid option), is explicit and does
-      not allow any ambiguity. It is faster (does not require extra round trip
-      time), so it is more efficient, which can be especially important for
-      energy restricted devices. It also does not require that the client
-      implement DNS resolution.</t>
+      a new address value if the one received is no longer appropriate. This problem
+      may be partially addressed by providing a list of addresses, rather than
+      just a single one. That, on the other hand, complicates client operation, as some
+      kind of failover procedure has to be defined and implemented.</t> <!-- 3 -->
 
       <t>FQDN provide a higher level of indirection and ambiguity. In many cases
       that may be considered a benefit, but can be considered a flaw in
       others. For example, one operator suggested to have the same name being
       resolved to different addresses depending on the point of attachement of
-      the host doing resolution.  This is one way to provide localized
-      addressing.  However, in order to do this, it is necessary to violate the
-      DNS convention that a query on a particular name should always return the
-      same answer (aside from ordering of IP addresses in the response, which is
-      supposed to be varied by the name server).  This same locality of
-      reference for configuration information can be achieved directly using
-      DHCP, since the DHCP server must know the network topology in order to
-      provide IP address or prefix configuration.</t>
+      the host doing resolution. This allows pointing at more localized
+      services. However, such a practice requires violating DNS principles
+      ('split horizon'), and hence is not recommended.</t> <!-- 5 -->
 
       <t>The other type of ambiguity is related to multiple provisioning domains
-      (see Section 12).  The stub resolver on the DHCP client cannot at present
-      be assumed to make the DNS query for a DHCP- supplied FQDN on the same
-      interface on which it received its DHCP configuration, and may therefore
-      get a different answer from the DNS than was intended.</t>
-
-      <t>This is particularly a problem when the normal expected use of the
-      option makes sense with private DNS zone(s), as might be the case on an
-      enterprise network.  It may also be the case that the client has an
-      explicit DNS server configured, and may therefore never query the
-      enterprise network's internal DNS server.</t>
+      (see <xref target="multpleProDomain"></xref>), and may get a different
+      answer from the DNS depending on which interface or DNS server is used to
+      do the resolution. This is particularly a problem when the normal
+      expected use of the option makes sense with private DNS zone(s), as might
+      be the case with a corporate VPN. It may also be the case that the
+      client has explicit DNS server configured so may not be using the corporate
+      internal DNS server.</t> <!-- 6 -->
 
       <t>FQDN does require a resolution into an actual address. This implies
-      the question when the FQDN resolution should be taken. There are a
+      the question when the FQDN resolution should be conducted. There are a
       couple of possible answers: a) by the server, when it is started, b) by
       the server, when it is about to send an option, c) by the client,
       immediately after receiving an option, d) by the client, when the
       content of the option is actually consumed. For a), b) and possibly c),
       the option should really convey an address, not FQDN. The only real
       incentive to use FQDN is case d). It is the only case that allows
-      possible changes in the DNS to be picked up by clients. <!-- Ted didn't
-      like that recommendation. It may be generalized
+      possible changes in the DNS to be picked up by clients. It may be generalized
       that the preference for address or FQDN depends on its envisaged usage.
       Short lived (immediately consumed) data should be address based, while
-      long timed information is better served with FQDN.--></t>
+      long timed information is better served with FQDN.</t> <!-- 7 -->
+
+      <t>If the parameter is expected to be used by constrained devices (low
+      power, battery operated, low capabilities) or in very lossy networks, it
+      may be appealing to drop the requirement of having DNS resolution being
+      performed and use addresses. Another example of a constrained device is a
+      network booted device, where despite the fact that the node itself is
+      very capable once it's booted, the boot prom is quite constrained.</t>
+      <!-- 9 -->
+
+      <t>Another aspect that should be considered is time required for the
+      clients to notice any configuration changes. Consider a case where a
+      server configures a service A using address and service B using FQDN. When
+      an administrator decides to update the configuration, he or she can update
+      the DHCP server configuration to change both services. If the clients do not
+      support reconfigure (which is an optional feature of RFC3315, but in some
+      environments, e.g. cable modems, is mandatory), the configuration will be
+      updated on clients after T1 timer elapses. Depending on the nature of the change
+      (is it a new server added to a cluster of already operating servers or a
+      new server that replaces the only available server that crashed?), this
+      may be an issue.  On the other hand, updating service B may be achieved
+      with DNS record update. That information may be cached by caching DNS
+      servers for up to TTL. Depending on the values of T1 and TTL, one update
+      may be faster than another. Furthermore, depending on the nature of the
+      change (planned modification or unexpected failure), T1 or TTL may be
+      lowered before the change to speed up new configuration adoption.</t>
+      <!-- 10 -->
+
+      <t>Addresses have a benefit of being easier to implemented and handle by
+      the DHCP software.  An address option is simpler to use, its validation is
+      trivial (multiple of 16 constitutes a valid option), is explicit and does
+      not allow any ambiguity. It is faster (does not require extra round trip
+      time), so it is more efficient, which can be especially important for
+      energy restricted devices. It also does not require having resolution
+      capability.</t> <!-- 4 -->
 
       <t>FQDN imposes a number of additional failure modes and issues that
       should be dealt with: <list style="numbers">
-          <t>The client must have a knowledge about available DNS servers.
-          That typically means that option DNS_SERVERS is mandatory. This
-          should be mentioned in the draft that defines new option. It is
-          possible that the server will return FQDN option, but not the DNS
-          Servers option. There should be a brief discussion about it;</t>
+          <t>The client must have a knowledge about available DNS
+          servers.  That typically means that option DNS_SERVERS <xref
+          target="RFC3646"/> is mandatory. This should be mentioned in
+          the draft that defines new option. It is possible that the
+          server will return FQDN option, but not the DNS Servers
+          option. There should be a brief discussion about it;</t>
 
           <t>The DNS may not be reachable;</t>
 
@@ -911,44 +916,15 @@
           send DNS queries to a different DNS server;</t>
 
           <t>It should be mentioned if Internationalized Domain Names are
-          allowed. If they are, what kind of DNS option encoding should be
-          specified.</t>
-        </list></t>
-
-      <t>If the parameter is expected to be used by constrained devices (low
-      power, battery operated, low capabilities) or in very lossy networks, it
-      may be appealing to drop the requirement of having DNS resolution being
-      performed and use addresses. Another example of a constrained device is a
-      network booted device, where despite the fact that the node itself is
-      very capable once it's booted, the boot prom is quite constrained.</t>
-
-      <t>Another aspect that should be considered is time required for the
-      clients to notice any configuration changes. Consider a case where a
-      server configures a service A using address and service B using fqdn. When
-      an administrator decides to update the configuration, he or she can update
-      DHCP server configuration to change both services. If the clients do not
-      support reconfigure (which is an optional feature of RFC3315, but in some
-      environments, e.g. cable modems, is mandatory), the configuration will be
-      updated on clients after T1 timer. Depending on the nature of the change
-      (is it a new server added to a cluster of already operating servers or a
-      new server that replaces the only available server that crashed?), this
-      may be an issue.  On the other hand, updating service B may be achieved
-      with DNS record update. That information may be cached by caching DNS
-      servers for up to TTL. Depending on the values of T1 and TTL, one update
-      may be faster than another. Furthermore, depending on the nature of the
-      change (planned modification or unexpected failure), T1 or TTL may be
-      lowered before the change to speed up new configuration adoption.
-
-      Simply speaking protocol designers don't know what the TTL or the T1 time
-      will be, so they can't make assumptions about whether a DHCP option will
-      be refreshed more quickly based on T1 or TTL.</t>
+          allowed. If they are, DNS option encoding should be specified.</t>
+        </list></t> <!-- 8 -->
 
       <t>Address options that are used with overly long T1 (renew timer) values
-      have some characteristics of hardcoding values. That is strongly
+      have some characteristics of hardcoded values. That is strongly
       discouraged. See <xref target="RFC4085"/> for an in depth discussion.
       If the option may appear in Information-Request, its lifetime should
       be controlled using information refresh time option <xref target="RFC4242"/>.
-      </t>
+      </t> <!-- 11 -->
 
       <t>One specific case that makes the choice between address and FQDN not
       obvious is a DNSSEC bootstrap scenario. DNSSEC validation imposes a
@@ -956,10 +932,10 @@
       consider signature inception and expiry times). This often implies usage
       of NTP configuration. However, if the NTP is provided as FQDN, there is no
       way to validate its DNSSEC signature. This is somewhat weak argument
-      though, as providing NTP server as an address is also not verifable using
+      though, as providing NTP server as an address is also not verifiable using
       DNSSEC.  If the thrustworthiness of the configuration provided by DHCP
       server is in question, DHCPv6 offers authentication mechanisms that allow
-      server authentication.</t>
+      server authentication.</t> <!-- 12 -->
     </section>
 
     <section title="Encapsulated options in DHCPv6">
@@ -1313,7 +1289,7 @@
       newly defined options are considered to be singletons. If multiple
       instances are allowed, the document MUST explain how to use them.
       Care should be taken to not assume the they will be processed
-      in the order they appear in the message. See <xref target="optionOrder" />
+      in the other they appear in the message. See <xref target="optionOrder" />
       for more details.</t>
 
       <t>When deciding whether a single or multiple option instances
@@ -1561,7 +1537,7 @@
       verbs. If a new draft defines a new option that clients request and
       servers provide, it merely extends current standards, so "updates 3315" is
       not required in the new document header. On the other hand, if a new
-      document replaces or modifies existing behavior, includes clarifications or
+      document replaces, modifies existing behavior, includes clarifications or
       other corrections, it should be noted that it updates the other
       document. For example, <xref target="RFC6644"></xref> clearly updates
       <xref target="RFC3315"></xref> as it replaces existing with new text.</t>
@@ -1640,15 +1616,15 @@
 
       <t>If the transmission of sensitive or confidential content is required,
       it is still possible to secure communication between relay agents and
-      servers. Relay agents and servers implementing this specification MUST
+      servers. Relay agents and servers communicating with relay agents must
       support the use of IPsec Encapsulating Security Payload (ESP) with
       encryption in transport mode, according to Section 3.1.1 of <xref
       target="RFC4303"/> and Section 21.1 of <xref target="RFC3315"/>. Sadly,
-      this requirement is almost universally ingored in real deployments. Even
+      this requirement is almost universally ignored in real deployments. Even
       if the communication path between relay agents and server is secured, the
       path between clients and relay agents or server is not.</t>
 
-      <t>Unless underlying transmission technology provides secure transmission
+      <t>Unless underlying transmission technology provides a secure transmission
       channel, the DHCPv6 options SHOULD NOT include PII or other sensitive
       information. If there are special circumstances that warrant sending such
       information over unsecured DHCPv6, the dangers MUST be clearly discussed
